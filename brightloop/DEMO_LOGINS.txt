@@ -1,0 +1,54 @@
+================================================================================
+          BRIGHTLOOP SOFTWARE - DEMO CREDENTIALS & JUDGE CHEATSHEET
+================================================================================
+
+APPLICATION ACCESS URL:
+  http://localhost:8000/
+  (or http://127.0.0.1:8000/)
+
+--------------------------------------------------------------------------------
+1. ADMINISTRATOR
+--------------------------------------------------------------------------------
+  Email       : admin@brightloop.com
+  Password    : Admin@123!
+  Permissions : Full access to Executive Dashboard, Analytics, MRR/ARR charts,
+                Product & Variant Catalog, Recurring Plans, Quotation Templates,
+                Invoicing, Taxes, Discounts, and Settlement Operations.
+
+--------------------------------------------------------------------------------
+2. STAFF MEMBER
+--------------------------------------------------------------------------------
+  Email       : staff1@brightloop.com
+  Password    : Staff@123!
+  Permissions : Day-to-day operations: Customer management, Creating & confirming
+                quotations, Managing active subscriptions, Generating invoices.
+
+--------------------------------------------------------------------------------
+3. CUSTOMER PORTAL
+--------------------------------------------------------------------------------
+  Email       : customer1@brightloop.com
+  Password    : Customer@123!
+  Permissions : Customer self-service portal: View my active subscriptions,
+                Browse billing history, Download invoices & receipts,
+                Simulate payments (Cash, Card, UPI, Bank Transfer).
+
+================================================================================
+DATABASE & API INFO:
+================================================================================
+  Database Host   : localhost:3306
+  MySQL User      : root
+  MySQL Password  : root1234
+  Database Schema : dsbrightloop (and brightloop_db)
+  Interactive API : http://localhost:8000/api/docs (FastAPI Swagger UI)
+
+================================================================================
+QUICK JUDGE DEMO FLOW SUGGESTION:
+================================================================================
+  Step 1: Log in as Administrator (admin@brightloop.com)
+          -> Showcase executive analytics, MRR, ARR, and real-time revenue charts.
+  Step 2: Navigate to Subscriptions
+          -> Demonstrate the strict state machine:
+             Draft -> Quotation -> Confirmed -> Active -> Closed
+  Step 3: Log in as Customer (customer1@brightloop.com)
+          -> Showcase customer self-service portal, subscription details, and invoice settlements.
+================================================================================

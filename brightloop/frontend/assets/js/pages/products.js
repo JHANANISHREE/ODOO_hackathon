@@ -1,6 +1,6 @@
 import { api } from '../api.js';
 import { showToast, openModal, closeModal, formatCurrency } from '../ui.js';
-import { enforceAuthGuard } from '../guards.js';
+import { enforceAuthGuard } from '/assets/js/guards.js';
 import { logoutUser, fetchCurrentUserProfile } from '../auth.js';
 
 enforceAuthGuard(['ADMIN', 'STAFF']);
@@ -133,6 +133,13 @@ function setupEventHandlers() {
     btn.addEventListener('click', () => {
       closeModal(btn.dataset.closeModal);
     });
+  });
+
+  document.getElementById('open-create-product-btn')?.addEventListener('click', () => {
+    currentEditingId = null;
+    document.getElementById('product-form')?.reset();
+    document.getElementById('product-modal-title').textContent = 'Create New Product';
+    openModal('product-modal');
   });
 
   const productForm = document.getElementById('product-form');

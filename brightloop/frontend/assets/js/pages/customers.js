@@ -58,10 +58,34 @@ function renderTable() {
     return true;
   });
 
+  const totalEl = document.getElementById('kpi-cust-total');
+  const activeEl = document.getElementById('kpi-cust-subscribed');
+  if (totalEl) totalEl.textContent = String(customersState.length);
+  if (activeEl) activeEl.textContent = String(customersState.filter(c => c.is_active).length);
+
   customersCounter.textContent = `Showing ${filtered.length} of ${customersState.length} customers`;
 
   if (!filtered.length) {
-    customersTbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted" style="padding: var(--space-8);">No customers found matching your criteria.</td></tr>`;
+    customersTbody.innerHTML = `
+      <tr>
+        <td colspan="7" style="padding: 0;">
+          <div class="empty-state">
+            <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <div class="empty-state-title">No Customers Found</div>
+            <div class="empty-state-desc">There are no customer profiles matching your search criteria.</div>
+            <button class="btn btn-primary btn-sm" id="empty-add-customer-btn">+ Add Customer</button>
+          </div>
+        </td>
+      </tr>
+    `;
+    document.getElementById('empty-add-customer-btn')?.addEventListener('click', () => {
+      document.getElementById('add-customer-btn')?.click();
+    });
     return;
   }
 

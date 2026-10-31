@@ -61,7 +61,21 @@ function renderTable() {
   paymentsCounter.textContent = `Showing ${filtered.length} of ${paymentsState.length} payments`;
 
   if (!filtered.length) {
-    paymentsTbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted" style="padding: var(--space-8);">No payments found matching your criteria.</td></tr>`;
+    paymentsTbody.innerHTML = `
+      <tr>
+        <td colspan="8" style="padding: 0;">
+          <div class="empty-state">
+            <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+              <line x1="1" y1="10" x2="23" y2="10"></line>
+            </svg>
+            <div class="empty-state-title">No Payments Recorded</div>
+            <div class="empty-state-desc">There are no payment transactions matching your search criteria or filters.</div>
+            <a href="/admin/invoices.html" class="btn btn-primary btn-sm">Record Payment via Invoice</a>
+          </div>
+        </td>
+      </tr>
+    `;
     return;
   }
 

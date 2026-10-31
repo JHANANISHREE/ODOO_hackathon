@@ -1,8 +1,10 @@
 import { requireRole } from '/assets/js/guards.js';
 import { api } from '/assets/js/api.js';
 import { showToast, openModal, closeModal, formatCurrency, formatDate } from '/assets/js/ui.js';
+import { initPortalLayout } from '/assets/js/layout.js';
 
 requireRole(['CUSTOMER', 'ADMIN', 'STAFF']);
+initPortalLayout();
 
 let invoicesState = [];
 
@@ -22,20 +24,6 @@ const payBalanceDisplay = document.getElementById('pay-balance-display');
 const payAmountInput = document.getElementById('pay-amount');
 const payMethodSelect = document.getElementById('pay-method');
 
-const userStr = localStorage.getItem('bl_user') || localStorage.getItem('user');
-if (userStr) {
-  try {
-    const u = JSON.parse(userStr);
-    document.getElementById('customer-name-display').textContent = u.name || 'Customer';
-    document.getElementById('customer-email-display').textContent = u.email || '';
-  } catch (_) {}
-}
-
-document.getElementById('logout-btn')?.addEventListener('click', () => {
-  localStorage.clear();
-  window.location.href = '/login.html';
-});
-
 document.getElementById('close-receipt-modal')?.addEventListener('click', () => closeModal(receiptModal));
 document.getElementById('close-receipt-btn')?.addEventListener('click', () => closeModal(receiptModal));
 printReceiptBtn?.addEventListener('click', () => window.print());
@@ -44,18 +32,22 @@ document.getElementById('close-pay-modal')?.addEventListener('click', () => clos
 document.getElementById('cancel-pay-btn')?.addEventListener('click', () => closeModal(payModal));
 
 function renderStatusBadge(inv) {
-  if (inv.status === 'paid') {
-    return `<span class="badge badge-success">PAID</span>`;
+  const st = (inv.status || '').toLowerCase();
+  if (st === 'paid') {
+    return `<span class="badge badge-success"><span class="badge-dot"></span>PAID</span>`;
   }
   if (inv.is_overdue) {
-    return `<span class="badge badge-danger">OVERDUE</span>`;
+    return `<span class="badge badge-danger"><span class="badge-dot"></span>OVERDUE</span>`;
   }
-  return `<span class="badge badge-warning">${inv.status.toUpperCase()}</span>`;
+  if (st === 'confirmed') {
+    return `<span class="badge badge-confirmed"><span class="badge-dot"></span>CONFIRMED</span>`;
+  }
+  return `<span class="badge badge-muted">${st.toUpperCase()}</span>`;
 }
 
 function renderTable() {
-  const q = (searchInput.value || '').trim().toLowerCase();
-  const st = statusFilter.value.toLowerCase();
+  const q = (searchInput?.value || '').trim().toLowerCase();
+  const st = (statusFilter?.value || '').toLowerCase();
 
   const filtered = invoicesState.filter(inv => {
     if (st && (inv.status || '').toLowerCase() !== st) return false;
@@ -66,136 +58,152 @@ function renderTable() {
     return true;
   });
 
-  invoicesCounter.textContent = `Showing ${filtered.length} of ${invoicesState.length} invoices`;
+  if (invoicesCounter) {
+    invoicesCounter.textContent = `Showing ${filtered.length} of ${invoicesState.length} invoices`;
+  }
 
   if (!filtered.length) {
-    invoicesTbody.innerHTML = `<tr><td colspan="9" class="text-center text-muted" style="padding: var(--space-8);">No billing records found.</td></tr>`;
+    if (invoicesTbody) {
+      invoicesTbody.innerHTML = `
+        <tr>
+          <td colspan="9" class="text-center" style="padding: 3.5rem 1.5rem;" id="invoices-empty-state">
+            <div style="max-width: 420px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+              <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--cream-100); display: flex; align-items: center; justify-content: center; color: var(--maroon-700);">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              </div>
+              <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--maroon-900); margin: 0;">No invoices available</h3>
+              <p class="text-muted text-sm" style="margin: 0; line-height: 1.5;">There are no invoices matching your current selection.</p>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
     return;
   }
 
-  invoicesTbody.innerHTML = filtered.map(inv => {
-    const bal = parseFloat(inv.outstanding_balance) || 0;
-    return `
-      <tr>
-        <td style="font-family: monospace; font-weight: var(--font-semibold); color: var(--color-primary);">${inv.invoice_number}</td>
-        <td class="text-xs text-muted">${formatDate(inv.period_start)} &ndash; ${formatDate(inv.period_end)}</td>
-        <td class="text-sm">${formatDate(inv.issue_date)}</td>
-        <td class="text-sm ${inv.is_overdue ? 'text-danger' : ''}">${formatDate(inv.due_date)}</td>
-        <td style="font-weight: var(--font-semibold);">${formatCurrency(inv.total_amount)}</td>
-        <td style="color: var(--color-success); font-weight: var(--font-medium);">${formatCurrency(inv.amount_paid)}</td>
-        <td style="font-weight: var(--font-bold); color: ${bal > 0 ? 'var(--color-warning)' : 'var(--color-text-muted)'};">${formatCurrency(bal)}</td>
-        <td>${renderStatusBadge(inv)}</td>
-        <td style="text-align: right;">
-          <div style="display: inline-flex; gap: var(--space-2);">
-            <button class="btn btn-secondary btn-sm receipt-btn" data-id="${inv.id}">Receipt</button>
-            ${bal > 0 ? `<button class="btn btn-primary btn-sm pay-btn" data-id="${inv.id}" data-balance="${bal}">Pay</button>` : ''}
-          </div>
-        </td>
-      </tr>
-    `;
-  }).join('');
+  if (invoicesTbody) {
+    invoicesTbody.innerHTML = filtered.map(inv => {
+      const bal = parseFloat(inv.outstanding_balance) || 0;
+      return `
+        <tr>
+          <td class="font-mono text-sm" style="font-weight: 600; color: var(--maroon-900);">${inv.invoice_number}</td>
+          <td class="text-xs text-muted">${formatDate(inv.period_start)} &ndash; ${formatDate(inv.period_end)}</td>
+          <td class="text-sm">${formatDate(inv.issue_date)}</td>
+          <td class="text-sm ${inv.is_overdue ? 'text-danger font-semibold' : ''}">${formatDate(inv.due_date)}</td>
+          <td class="text-right" style="font-weight: 600;">${formatCurrency(inv.total_amount)}</td>
+          <td class="text-right" style="color: var(--success); font-weight: 600;">${formatCurrency(inv.amount_paid)}</td>
+          <td class="text-right" style="font-weight: 700; color: ${bal > 0 ? 'var(--warn)' : 'var(--muted)'};">${formatCurrency(bal)}</td>
+          <td>${renderStatusBadge(inv)}</td>
+          <td style="text-align: right;">
+            <div style="display: inline-flex; gap: 0.5rem; justify-content: flex-end;">
+              <button class="btn btn-secondary btn-sm receipt-btn" data-id="${inv.id}">Receipt</button>
+              ${bal > 0 ? `<button class="btn btn-primary btn-sm pay-btn" data-id="${inv.id}" data-balance="${bal}">Pay</button>` : ''}
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
 
-  invoicesTbody.querySelectorAll('.receipt-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = parseInt(btn.dataset.id, 10);
-      const item = invoicesState.find(x => x.id === id);
-      if (item) showReceiptModal(item);
+    invoicesTbody.querySelectorAll('.receipt-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = parseInt(btn.dataset.id, 10);
+        showReceipt(id);
+      });
     });
-  });
 
-  invoicesTbody.querySelectorAll('.pay-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = parseInt(btn.dataset.id, 10);
-      const bal = parseFloat(btn.dataset.balance);
-      openPaymentDialog(id, bal);
+    invoicesTbody.querySelectorAll('.pay-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = parseInt(btn.dataset.id, 10);
+        const bal = parseFloat(btn.dataset.balance);
+        openPaymentDialog(id, bal);
+      });
     });
-  });
+  }
 }
 
-function showReceiptModal(inv) {
-  document.getElementById('receipt-title').textContent = `Receipt ${inv.invoice_number}`;
+async function showReceipt(invoiceId) {
+  try {
+    const inv = await api.get(`/invoices/${invoiceId}`);
+    if (!inv) return;
 
-  const linesHtml = (inv.lines || []).map(l => {
-    const pName = l.product ? l.product.name : 'Subscription Service';
-    const vName = l.variant ? ` (${l.variant.name})` : '';
-    return `
+    const linesHtml = (inv.lines || []).map(line => `
       <tr>
-        <td>${pName}${vName}</td>
-        <td style="text-align: center;">${l.quantity}</td>
-        <td style="text-align: right;">${formatCurrency(l.unit_price)}</td>
-        <td style="text-align: right;">${formatCurrency(l.tax_amount)}</td>
-        <td style="text-align: right; font-weight: var(--font-semibold);">${formatCurrency(l.line_total)}</td>
+        <td style="padding: 0.65rem 0; border-bottom: 1px solid var(--cream-100);">${line.product ? line.product.name : 'Subscription Service'} ${line.variant ? `(${line.variant.attribute_value})` : ''}</td>
+        <td style="padding: 0.65rem 0; text-align: center; border-bottom: 1px solid var(--cream-100);">${line.quantity}</td>
+        <td style="padding: 0.65rem 0; text-align: right; border-bottom: 1px solid var(--cream-100);">${formatCurrency(line.unit_price)}</td>
+        <td style="padding: 0.65rem 0; text-align: right; border-bottom: 1px solid var(--cream-100); font-weight: 600;">${formatCurrency(line.line_total || (line.unit_price * line.quantity))}</td>
       </tr>
-    `;
-  }).join('');
+    `).join('');
 
-  receiptContent.innerHTML = `
-    <div style="padding: var(--space-2);">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-6); border-bottom: 2px solid var(--color-border); padding-bottom: var(--space-4);">
+    receiptContent.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; border-bottom: 2px solid var(--maroon-800); padding-bottom: 1rem;">
         <div>
-          <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: 4px;">
-            <div class="brand-icon" style="width: 24px; height: 24px; font-size: 14px;">B</div>
-            <strong style="font-size: var(--text-lg);">Brightloop Software</strong>
-          </div>
-          <div class="text-xs text-muted">100 Tech Park Way, Silicon Valley, CA</div>
-          <div class="text-xs text-muted">Tax ID: US-948201948</div>
+          <div style="font-size: 1.4rem; font-weight: 700; color: var(--maroon-900); font-family: var(--font-display);">Brightloop Software</div>
+          <div class="text-xs text-muted">Subscription Lifecycle Management</div>
         </div>
         <div style="text-align: right;">
-          <h2 style="font-size: var(--text-xl); font-weight: var(--font-bold); margin: 0; color: var(--color-primary);">${inv.invoice_number}</h2>
-          <div class="text-xs text-muted">Date: ${formatDate(inv.issue_date)}</div>
-          <div class="text-xs text-muted">Due Date: ${formatDate(inv.due_date)}</div>
+          <div style="font-weight: 700; font-family: var(--font-mono); font-size: 1.1rem; color: var(--maroon-900);">${inv.invoice_number}</div>
+          <div class="text-xs text-muted">Issued: ${formatDate(inv.issue_date)}</div>
         </div>
       </div>
 
-      <table class="table" style="margin-bottom: var(--space-6);">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; font-size: 0.88rem;">
+        <div>
+          <div class="text-xs text-muted" style="text-transform: uppercase;">Billed To:</div>
+          <div style="font-weight: 600;">${inv.customer ? inv.customer.name : 'Valued Customer'}</div>
+          <div class="text-xs text-muted">${inv.customer ? inv.customer.email : ''}</div>
+        </div>
+        <div style="text-align: right;">
+          <div class="text-xs text-muted" style="text-transform: uppercase;">Payment Status:</div>
+          <div style="font-weight: 700; text-transform: uppercase; color: ${inv.status === 'paid' ? 'var(--success)' : 'var(--warn)'};">${inv.status}</div>
+          <div class="text-xs text-muted">Due: ${formatDate(inv.due_date)}</div>
+        </div>
+      </div>
+
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-bottom: 1.5rem;">
         <thead>
-          <tr>
-            <th>Description</th>
-            <th style="text-align: center;">Qty</th>
-            <th style="text-align: right;">Unit Price</th>
-            <th style="text-align: right;">Tax</th>
-            <th style="text-align: right;">Total</th>
+          <tr style="border-bottom: 1px solid var(--border); font-size: 0.75rem; text-transform: uppercase; color: var(--muted);">
+            <th style="text-align: left; padding-bottom: 0.5rem;">Description</th>
+            <th style="text-align: center; padding-bottom: 0.5rem;">Qty</th>
+            <th style="text-align: right; padding-bottom: 0.5rem;">Unit Price</th>
+            <th style="text-align: right; padding-bottom: 0.5rem;">Total</th>
           </tr>
         </thead>
         <tbody>
-          ${linesHtml || `<tr><td colspan="5" class="text-center text-muted">Subscription Recurring Period</td></tr>`}
+          ${linesHtml}
         </tbody>
       </table>
 
-      <div style="display: flex; justify-content: flex-end;">
-        <div style="width: 260px;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-1); font-size: var(--text-sm);">
-            <span>Subtotal:</span>
+      <div style="display: flex; justify-content: flex-end; font-size: 0.9rem;">
+        <div style="width: 240px; display: flex; flex-direction: column; gap: 0.35rem;">
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-muted">Subtotal:</span>
             <span>${formatCurrency(inv.subtotal)}</span>
           </div>
-          ${parseFloat(inv.discount_amount) > 0 ? `
-            <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-1); font-size: var(--text-sm); color: var(--color-success);">
-              <span>Discount:</span>
-              <span>-${formatCurrency(inv.discount_amount)}</span>
-            </div>
-          ` : ''}
-          <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-1); font-size: var(--text-sm);">
-            <span>Tax:</span>
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-muted">Tax:</span>
             <span>${formatCurrency(inv.tax_amount)}</span>
           </div>
-          <div style="display: flex; justify-content: space-between; margin-top: var(--space-2); padding-top: var(--space-2); border-top: 2px solid var(--color-border); font-size: var(--text-base); font-weight: var(--font-bold);">
+          <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.05rem; border-top: 1px solid var(--border); padding-top: 0.5rem; color: var(--maroon-900);">
             <span>Total:</span>
             <span>${formatCurrency(inv.total_amount)}</span>
           </div>
-          <div style="display: flex; justify-content: space-between; margin-top: var(--space-1); font-size: var(--text-sm); color: var(--color-success);">
-            <span>Paid:</span>
+          <div style="display: flex; justify-content: space-between; color: var(--success); font-weight: 600;">
+            <span>Amount Paid:</span>
             <span>${formatCurrency(inv.amount_paid)}</span>
           </div>
-          <div style="display: flex; justify-content: space-between; margin-top: var(--space-1); font-size: var(--text-base); font-weight: var(--font-bold); color: var(--color-primary);">
+          <div style="display: flex; justify-content: space-between; font-weight: 700; color: ${inv.total_amount - inv.amount_paid > 0 ? 'var(--warn)' : 'var(--muted)'};">
             <span>Balance Due:</span>
-            <span>${formatCurrency(inv.outstanding_balance)}</span>
+            <span>${formatCurrency(Math.max(0, inv.total_amount - inv.amount_paid))}</span>
           </div>
         </div>
       </div>
-    </div>
-  `;
+    `;
 
-  openModal(receiptModal);
+    openModal(receiptModal);
+  } catch (err) {
+    showToast(err.message || 'Failed to load receipt details', 'danger');
+  }
 }
 
 function openPaymentDialog(invId, balance) {

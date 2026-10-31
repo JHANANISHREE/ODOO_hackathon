@@ -1,9 +1,11 @@
 import { requireRole } from '/assets/js/guards.js';
-import { api } from '/assets/js/api.js';
+import { api, setCurrentUser } from '/assets/js/api.js';
 import { showToast } from '/assets/js/ui.js';
 import { validatePassword } from '/assets/js/validators.js';
+import { initPortalLayout } from '/assets/js/layout.js';
 
 requireRole(['CUSTOMER', 'ADMIN', 'STAFF']);
+initPortalLayout();
 
 const profileNameInput = document.getElementById('profile-name');
 const profileEmailInput = document.getElementById('profile-email');
@@ -16,20 +18,17 @@ const passwordForm = document.getElementById('password-form');
 
 let currentUser = null;
 
-document.getElementById('logout-btn')?.addEventListener('click', () => {
-  localStorage.clear();
-  window.location.href = '/login.html';
-});
-
 async function loadProfile() {
   try {
     currentUser = await api.get('/auth/me');
-    profileNameInput.value = currentUser.name || '';
-    profileEmailInput.value = currentUser.email || '';
-    profilePhoneInput.value = currentUser.phone || '';
+    if (profileNameInput) profileNameInput.value = currentUser.name || '';
+    if (profileEmailInput) profileEmailInput.value = currentUser.email || '';
+    if (profilePhoneInput) profilePhoneInput.value = currentUser.phone || '';
 
-    document.getElementById('customer-name-display').textContent = currentUser.name || 'Customer';
-    document.getElementById('customer-email-display').textContent = currentUser.email || '';
+    const nameEl = document.getElementById('customer-name-display');
+    const emailEl = document.getElementById('customer-email-display');
+    if (nameEl) nameEl.textContent = currentUser.name || 'Customer';
+    if (emailEl) emailEl.textContent = currentUser.email || '';
   } catch (err) {
     showToast(err.message || 'Failed to load profile details', 'danger');
   }
@@ -47,8 +46,9 @@ profileForm?.addEventListener('submit', async (e) => {
 
     const updated = await api.put(`/users/${currentUser.id}`, payload);
     currentUser = updated;
-    localStorage.setItem('user', JSON.stringify(updated));
-    document.getElementById('customer-name-display').textContent = updated.name;
+    setCurrentUser(updated);
+    const nameEl = document.getElementById('customer-name-display');
+    if (nameEl) nameEl.textContent = updated.name;
     showToast('Profile updated successfully', 'success');
   } catch (err) {
     showToast(err.message || 'Failed to update profile', 'danger');
@@ -58,24 +58,26 @@ profileForm?.addEventListener('submit', async (e) => {
 passwordForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const pwd = newPasswordInput.value;
-  const cpwd = confirmPasswordInput.value;
+  const confirmPwd = confirmPasswordInput.value;
 
-  if (pwd !== cpwd) {
+  if (pwd !== confirmPwd) {
     showToast('Passwords do not match', 'warning');
     return;
   }
 
-  const v = validatePassword(pwd);
-  if (!v.isValid) {
-    showToast('Password does not meet complexity criteria', 'warning');
+  const check = validatePassword(pwd);
+  if (!check.valid) {
+    showToast('Password must be at least 8 characters and include uppercase, lowercase, numbers, and special characters', 'warning');
     return;
   }
 
   try {
-    await api.put(`/users/${currentUser.id}`, { password: pwd });
-    newPasswordInput.value = '';
-    confirmPasswordInput.value = '';
+    await api.post('/auth/change-password', {
+      current_password: document.getElementById('current-password')?.value || '',
+      new_password: pwd
+    });
     showToast('Password updated successfully', 'success');
+    passwordForm.reset();
   } catch (err) {
     showToast(err.message || 'Failed to update password', 'danger');
   }

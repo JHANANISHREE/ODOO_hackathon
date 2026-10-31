@@ -1,7 +1,7 @@
 import { getCurrentUser } from '/assets/js/api.js';
 import { logoutUser } from '/assets/js/auth.js';
 
-const NAV_ITEMS = [
+const ADMIN_NAV_ITEMS = [
   { section: 'NAVIGATION' },
   { key: 'dashboard', label: 'Overview', href: '/admin/dashboard.html', icon: '<rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>' },
   { key: 'subscriptions', label: 'Subscriptions', href: '/admin/subscriptions.html', icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>' },
@@ -19,7 +19,7 @@ const NAV_ITEMS = [
 
 export function getActiveKeyFromUrl() {
   const path = window.location.pathname.toLowerCase();
-  for (const item of NAV_ITEMS) {
+  for (const item of ADMIN_NAV_ITEMS) {
     if (item.href && path.includes(item.key)) {
       return item.key;
     }
@@ -48,14 +48,14 @@ export function initLayout(options = {}) {
 
 function renderSidebar(sidebar, activeKey) {
   let navHtml = '';
-  for (const item of NAV_ITEMS) {
+  for (const item of ADMIN_NAV_ITEMS) {
     if (item.section) {
       navHtml += `<div class="nav-section-title">${item.section}</div>`;
     } else {
       const isActive = item.key === activeKey ? 'active' : '';
       navHtml += `
         <a href="${item.href}" class="nav-link ${isActive}" data-nav="${item.key}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon">${item.icon}</svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon icon-20">${item.icon}</svg>
           <span>${item.label}</span>
         </a>
       `;
@@ -79,7 +79,7 @@ function renderSidebar(sidebar, activeKey) {
         </div>
       </div>
       <button class="sidebar-logout-btn" id="sidebar-logout-btn" title="Log out" aria-label="Log out">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon icon-20"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
       </button>
     </div>
   `;
@@ -94,7 +94,7 @@ function renderTopbar(topbar, pageTitle, breadcrumb) {
   topbar.innerHTML = `
     <div class="topbar-left">
       <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon icon-20"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
       </button>
       <div class="topbar-title-group">
         <span class="topbar-breadcrumb">${breadcrumb}</span>
@@ -102,13 +102,13 @@ function renderTopbar(topbar, pageTitle, breadcrumb) {
       </div>
     </div>
     <div class="topbar-search">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      <input type="text" id="global-search" placeholder="Search subscriptions, customers, invoices...">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon icon-16"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="global-search" placeholder="Search subscriptions, customers, invoices..." aria-label="Global search">
     </div>
     <div class="topbar-actions">
       <div class="latency-badge" id="latency-badge">⚡ 0ms</div>
       <button class="topbar-bell-btn" id="topbar-notifications" title="Notifications" aria-label="Notifications">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon icon-20"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
       </button>
       <button class="btn btn-secondary btn-sm" id="logout-btn">Log out</button>
     </div>
@@ -121,47 +121,239 @@ function renderTopbar(topbar, pageTitle, breadcrumb) {
 }
 
 function setupMobileDrawer() {
+  const menuToggle = document.getElementById('menu-toggle');
+  const sidebar = document.querySelector('.app-sidebar, #app-sidebar');
   let backdrop = document.querySelector('.sidebar-backdrop');
-  if (!backdrop) {
+
+  if (!backdrop && sidebar) {
     backdrop = document.createElement('div');
     backdrop.className = 'sidebar-backdrop';
     document.body.appendChild(backdrop);
   }
 
-  const toggle = document.getElementById('menu-toggle');
-  const sidebar = document.querySelector('.app-sidebar, #app-sidebar');
-
-  if (toggle && sidebar) {
-    toggle.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
-      backdrop.classList.toggle('active');
-    });
-  }
-
-  if (backdrop && sidebar) {
-    backdrop.addEventListener('click', () => {
+  function toggleSidebar(open) {
+    if (!sidebar) return;
+    const shouldOpen = open !== undefined ? open : !sidebar.classList.contains('open');
+    if (shouldOpen) {
+      sidebar.classList.add('open');
+      backdrop?.classList.add('active');
+    } else {
       sidebar.classList.remove('open');
-      backdrop.classList.remove('active');
-    });
+      backdrop?.classList.remove('active');
+    }
   }
+
+  menuToggle?.addEventListener('click', () => toggleSidebar());
+  backdrop?.addEventListener('click', () => toggleSidebar(false));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sidebar?.classList.contains('open')) {
+      toggleSidebar(false);
+    }
+  });
 }
 
-export function setupUserDisplay() {
+function setupUserDisplay() {
   const user = getCurrentUser();
   if (!user) return;
 
-  const initials = user.name ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'US';
-  const nameEls = document.querySelectorAll('#current-user-name, .user-name');
-  const roleEls = document.querySelectorAll('#current-user-role, .user-role');
-  const avatarEls = document.querySelectorAll('#current-user-avatar, .user-avatar');
+  const nameEls = document.querySelectorAll('#current-user-name, [data-user-name]');
+  nameEls.forEach(el => el.textContent = user.name || 'User');
 
-  nameEls.forEach(el => { el.textContent = user.name || user.email; });
-  roleEls.forEach(el => { el.textContent = user.role || 'USER'; });
-  avatarEls.forEach(el => { el.textContent = initials; });
+  const roleEls = document.querySelectorAll('#current-user-role, [data-user-role]');
+  roleEls.forEach(el => el.textContent = user.role || '');
+
+  const avatarEls = document.querySelectorAll('#current-user-avatar, [data-user-avatar]');
+  const initials = (user.name || 'User').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+  avatarEls.forEach(el => el.textContent = initials);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  if (document.querySelector('.app-layout, .app')) {
+export function initPortalLayout(options = {}) {
+  const path = window.location.pathname.toLowerCase();
+  let activeTab = 'subscriptions';
+  if (path.includes('invoice')) activeTab = 'invoices';
+  if (path.includes('profile')) activeTab = 'profile';
+
+  const user = getCurrentUser() || {};
+  const initials = (user.name || 'Customer').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+  let header = document.querySelector('header.portal-header, header');
+  if (header) {
+    header.className = 'portal-header';
+    header.innerHTML = `
+      <div class="container portal-header-inner">
+        <div class="portal-brand-group">
+          <a href="/portal/my-subscriptions.html" class="portal-brand-link">
+            <div class="brand-icon">B</div>
+            <span class="brand-name portal-brand-name">Brightloop</span>
+          </a>
+          <span class="portal-badge">CUSTOMER PORTAL</span>
+        </div>
+
+        <nav class="portal-nav" id="portal-nav">
+          <a href="/portal/my-subscriptions.html" class="portal-tab ${activeTab === 'subscriptions' ? 'active' : ''}">Subscriptions</a>
+          <a href="/portal/my-invoices.html" class="portal-tab ${activeTab === 'invoices' ? 'active' : ''}">Invoices &amp; Receipts</a>
+          <a href="/portal/profile.html" class="portal-tab ${activeTab === 'profile' ? 'active' : ''}">Account Profile</a>
+        </nav>
+
+        <div class="portal-user-group">
+          <div class="portal-user-avatar">${initials}</div>
+          <div class="portal-user-meta">
+            <div class="portal-user-name" id="customer-name-display">${user.name || 'Customer'}</div>
+            <div class="portal-user-email" id="customer-email-display">${user.email || 'customer@brightloop.com'}</div>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="logout-btn">Log out</button>
+        </div>
+
+        <button class="portal-mobile-toggle" id="portal-mobile-toggle" aria-label="Toggle navigation">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon icon-20"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="portal-mobile-drawer" id="portal-mobile-drawer">
+        <div class="portal-drawer-inner">
+          <div class="portal-drawer-user">
+            <div class="portal-user-avatar">${initials}</div>
+            <div>
+              <div class="font-bold">${user.name || 'Customer'}</div>
+              <div class="text-xs text-muted">${user.email || ''}</div>
+            </div>
+          </div>
+          <nav class="portal-drawer-links">
+            <a href="/portal/my-subscriptions.html" class="portal-tab ${activeTab === 'subscriptions' ? 'active' : ''}">Subscriptions</a>
+            <a href="/portal/my-invoices.html" class="portal-tab ${activeTab === 'invoices' ? 'active' : ''}">Invoices &amp; Receipts</a>
+            <a href="/portal/profile.html" class="portal-tab ${activeTab === 'profile' ? 'active' : ''}">Account Profile</a>
+          </nav>
+          <div style="margin-top: 1rem;">
+            <button class="btn btn-secondary btn-sm" style="width: 100%;" id="drawer-logout-btn">Log out</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const toggleBtn = header.querySelector('#portal-mobile-toggle');
+    const drawer = header.querySelector('#portal-mobile-drawer');
+    toggleBtn?.addEventListener('click', () => {
+      drawer?.classList.toggle('open');
+    });
+
+    header.querySelector('#logout-btn')?.addEventListener('click', () => logoutUser());
+    header.querySelector('#drawer-logout-btn')?.addEventListener('click', () => logoutUser());
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && drawer?.classList.contains('open')) {
+        drawer.classList.remove('open');
+      }
+    });
+  }
+}
+
+export function initPublicNavbar(options = {}) {
+  const isHome = window.location.pathname === '/' || window.location.pathname.endsWith('index.html');
+  const nav = document.querySelector('nav.public-nav, nav');
+  if (!nav) return;
+
+  const prefix = isHome ? '' : '/';
+
+  nav.className = 'public-nav';
+  nav.innerHTML = `
+    <div class="container public-nav-inner">
+      <a href="/" class="public-brand-link">
+        <div class="brand-icon">B</div>
+        <span class="brand-name" style="color: var(--maroon-900); font-family: var(--font-display); font-size: 1.45rem; font-weight: 700;">Brightloop</span>
+      </a>
+
+      <ul class="public-nav-links" id="public-nav-links">
+        <li><a href="${prefix}#features" class="public-nav-item">Features</a></li>
+        <li><a href="${prefix}#how-it-works" class="public-nav-item">How It Works</a></li>
+        <li><a href="${prefix}#pricing" class="public-nav-item">Pricing</a></li>
+        <li><a href="${prefix}#faq" class="public-nav-item">FAQ</a></li>
+      </ul>
+
+      <div class="public-nav-actions">
+        <a href="/login.html" class="btn btn-secondary btn-sm">Sign In</a>
+        <a href="/signup.html" class="btn btn-primary btn-sm">Get Started</a>
+      </div>
+
+      <button class="mobile-menu-btn" id="mobile-toggle-btn" aria-label="Toggle navigation">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon icon-24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <div class="public-mobile-drawer" id="public-mobile-drawer">
+      <div class="public-drawer-links">
+        <a href="${prefix}#features" class="public-drawer-item">Features</a>
+        <a href="${prefix}#how-it-works" class="public-drawer-item">How It Works</a>
+        <a href="${prefix}#pricing" class="public-drawer-item">Pricing</a>
+        <a href="${prefix}#faq" class="public-drawer-item">FAQ</a>
+        <div class="public-drawer-buttons">
+          <a href="/login.html" class="btn btn-secondary" style="width: 100%;">Sign In</a>
+          <a href="/signup.html" class="btn btn-primary" style="width: 100%;">Get Started</a>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const toggleBtn = nav.querySelector('#mobile-toggle-btn');
+  const drawer = nav.querySelector('#public-mobile-drawer');
+
+  toggleBtn?.addEventListener('click', () => {
+    drawer?.classList.toggle('open');
+  });
+
+  drawer?.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      drawer.classList.remove('open');
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer?.classList.contains('open')) {
+      drawer.classList.remove('open');
+    }
+  });
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 20) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  });
+}
+
+// Auto-initialize shared layout components when DOM is ready
+function autoInitLayout() {
+  if (document.querySelector('.app-sidebar') || document.querySelector('.app-topbar')) {
     initLayout();
   }
-});
+  if (document.querySelector('.portal-header') && !document.querySelector('.portal-header-inner')) {
+    initPortalLayout();
+  }
+  if (document.querySelector('nav.public-nav') && !document.querySelector('.public-nav-inner')) {
+    initPublicNavbar();
+  }
+
+  // Update initial latency badge if present
+  const badge = document.getElementById('latency-badge');
+  if (badge && (badge.textContent.includes('0ms') || !badge.textContent.trim())) {
+    try {
+      const navEntry = performance.getEntriesByType('navigation')[0];
+      if (navEntry && navEntry.responseEnd) {
+        const dur = Math.round(navEntry.responseEnd - (navEntry.requestStart || 0));
+        if (dur > 0 && dur < 10000) {
+          badge.textContent = `⚡ ${dur}ms`;
+        }
+      }
+    } catch (_) {}
+  }
+}
+
+if (typeof window !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', autoInitLayout);
+  } else {
+    autoInitLayout();
+  }
+}
+

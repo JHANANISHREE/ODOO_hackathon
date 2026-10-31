@@ -1,8 +1,78 @@
 import { api } from '../api.js';
-import { countUp, formatCurrency } from '../ui.js';
+import { formatCurrency } from '../ui.js';
+import { initPublicNavbar } from '../layout.js';
 
 let plansData = [];
 let billingMode = 'monthly';
+
+function renderSkeletons() {
+  const mrrEl = document.getElementById('preview-mrr');
+  const subsEl = document.getElementById('preview-subs');
+  const rateEl = document.getElementById('preview-rate');
+  const tbody = document.getElementById('preview-recent-tbody');
+
+  if (mrrEl) mrrEl.innerHTML = '<span class="skeleton" style="display:inline-block; width:120px; height:32px; border-radius:6px;"></span>';
+  if (subsEl) subsEl.innerHTML = '<span class="skeleton" style="display:inline-block; width:80px; height:32px; border-radius:6px;"></span>';
+  if (rateEl) rateEl.innerHTML = '<span class="skeleton" style="display:inline-block; width:60px; height:32px; border-radius:6px;"></span>';
+  if (tbody) {
+    tbody.innerHTML = `
+      <tr><td colspan="5" style="padding: 1.5rem; text-align: center;"><div class="skeleton" style="width: 100%; height: 24px; border-radius: 6px; margin-bottom: 8px;"></div><div class="skeleton" style="width: 80%; height: 24px; border-radius: 6px;"></div></td></tr>
+    `;
+  }
+}
+
+async function loadLiveStats() {
+  renderSkeletons();
+  try {
+    const stats = await api.get('/public/stats');
+
+    const mrrEl = document.getElementById('preview-mrr');
+    const subsEl = document.getElementById('preview-subs');
+    const rateEl = document.getElementById('preview-rate');
+    const tbody = document.getElementById('preview-recent-tbody');
+
+    const statSubs = document.getElementById('stat-subscriptions');
+    const statInvoices = document.getElementById('stat-invoices');
+    const statUptime = document.getElementById('stat-uptime');
+    const statSpeed = document.getElementById('stat-speed');
+
+    if (mrrEl) mrrEl.textContent = formatCurrency(stats.mrr || 0);
+    if (subsEl) subsEl.textContent = Number(stats.active_subscriptions || 0).toLocaleString();
+    if (rateEl) rateEl.textContent = stats.invoicing_rate || '100%';
+
+    if (statSubs) statSubs.textContent = `${Number(stats.active_subscriptions || 0).toLocaleString()}+`;
+    if (statInvoices) statInvoices.textContent = stats.mrr ? formatCurrency(stats.mrr * 12) : '$8.4M+';
+    if (statUptime) statUptime.textContent = stats.uptime || '99.99%';
+    if (statSpeed) statSpeed.textContent = stats.processing_time || '< 0.05s';
+
+    if (tbody && stats.recent_subscriptions && stats.recent_subscriptions.length) {
+      const badgeMap = {
+        active: 'badge-active',
+        confirmed: 'badge-confirmed',
+        quotation: 'badge-quotation',
+        draft: 'badge-draft',
+        paused: 'badge-paused',
+        closed: 'badge-closed'
+      };
+
+      tbody.innerHTML = stats.recent_subscriptions.map(s => {
+        const stLower = (s.status || '').toLowerCase();
+        const badgeClass = badgeMap[stLower] || 'badge-muted';
+        return `
+          <tr>
+            <td class="font-mono text-sm" style="font-weight: 600; color: var(--maroon-900);">${s.number}</td>
+            <td style="font-weight: 500;">${s.customer}</td>
+            <td class="text-muted text-sm">${s.plan}</td>
+            <td><span class="badge ${badgeClass}"><span class="badge-dot"></span>${s.status.toUpperCase()}</span></td>
+            <td class="text-right" style="font-weight: 600;">${formatCurrency(s.amount)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+  } catch (err) {
+    console.error('Failed to load public stats:', err);
+  }
+}
 
 async function loadPlans() {
   const container = document.getElementById('pricing-grid');
@@ -12,114 +82,42 @@ async function loadPlans() {
     plansData = await api.get('/public/plans');
     renderPlans();
   } catch (err) {
-    plansData = [
-      {
-        id: 1,
-        name: "Starter Loop",
-        price_monthly: 49,
-        price_yearly: 490,
-        description: "Essential recurring billing and invoice generation for early-stage SaaS and startups.",
-        features: [
-          "Up to 250 active subscriptions",
-          "Automated recurring invoicing",
-          "Quotation templates",
-          "Standard tax & discount engine",
-          "Customer self-service portal"
-        ],
-        popular: false,
-        badge: "Entry"
-      },
-      {
-        id: 2,
-        name: "Growth Pro",
-        price_monthly: 149,
-        price_yearly: 1490,
-        description: "Powerhouse subscription lifecycle management with multi-variant billing and scheduler.",
-        features: [
-          "Up to 2,500 active subscriptions",
-          "Idempotent automated billing run",
-          "Partial payments & UPI/Cards/Bank",
-          "Advanced role-based access (Admin/Staff)",
-          "Full audit trail & state machine",
-          "Email notifications & PDF invoices"
-        ],
-        popular: true,
-        badge: "Most Popular"
-      },
-      {
-        id: 3,
-        name: "Enterprise Infinite",
-        price_monthly: 399,
-        price_yearly: 3990,
-        description: "High-volume subscription architecture engineered for speed, custom lines and scale.",
-        features: [
-          "Unlimited subscriptions & invoices",
-          "Sub-second reporting dashboard",
-          "Custom variant matrices & add-ons",
-          "Dedicated scheduler & batch billing",
-          "Full REST API integration",
-          "Priority 24/7 engineering SLA"
-        ],
-        popular: false,
-        badge: "Enterprise"
-      }
-    ];
-    renderPlans();
+    console.error('Failed to load plans:', err);
   }
 }
 
 function renderPlans() {
   const container = document.getElementById('pricing-grid');
-  if (!container) return;
+  if (!container || !plansData.length) return;
 
   container.innerHTML = plansData.map(plan => {
     const price = billingMode === 'monthly' ? plan.price_monthly : plan.price_yearly;
     const periodText = billingMode === 'monthly' ? '/ month' : '/ year';
-    const featuredClass = plan.popular ? 'featured' : '';
+    const isPopular = plan.popular;
 
     return `
-      <div class="pricing-card ${featuredClass}">
-        ${plan.popular ? '<div style="position:absolute; top:-12px; right:24px;" class="badge badge-active">Most Popular</div>' : ''}
-        <h3 style="margin-bottom: 0.5rem;">${plan.name}</h3>
-        <p class="text-muted" style="min-height: 48px; font-size: 0.88rem;">${plan.description}</p>
-        <div class="pricing-price">
-          ${formatCurrency(price)}
-          <span class="pricing-period">${periodText}</span>
+      <div class="pricing-card ${isPopular ? 'featured' : ''}" style="position: relative; background: var(--card-bg); border: ${isPopular ? '2px solid var(--maroon-800)' : '1px solid var(--border)'}; border-radius: var(--radius-card); padding: 32px 28px; box-shadow: ${isPopular ? 'var(--shadow-md)' : 'var(--shadow-sm)'}; display: flex; flex-direction: column;">
+        ${isPopular ? '<div style="position: absolute; top: -14px; right: 24px;" class="badge badge-active">Most Popular</div>' : ''}
+        <h3 style="font-family: var(--font-body); font-size: 1.35rem; font-weight: 700; color: var(--maroon-900); margin-bottom: 0.5rem;">${plan.name}</h3>
+        <p class="text-muted text-sm" style="min-height: 44px; margin-bottom: 1.5rem;">${plan.description}</p>
+        <div style="margin-bottom: 1.5rem; display: flex; align-items: baseline; gap: 0.35rem;">
+          <span class="metric-numeral" style="font-size: 2.75rem; color: var(--maroon-900);">${formatCurrency(price)}</span>
+          <span class="text-muted text-sm">${periodText}</span>
         </div>
-        <ul class="pricing-features">
-          ${plan.features.map(f => `
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success-ink)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <ul style="list-style: none; padding: 0; margin: 0 0 2rem; display: flex; flex-direction: column; gap: 0.75rem; flex: 1;">
+          ${(plan.features || []).map(f => `
+            <li style="display: flex; align-items: center; gap: 0.65rem; font-size: 0.9rem; color: var(--ink);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" class="icon icon-16" style="flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
               <span>${f}</span>
             </li>
           `).join('')}
         </ul>
-        <a href="/signup.html" class="btn ${plan.popular ? 'btn-primary' : 'btn-secondary'} btn-lg" style="width: 100%;">
-          Start Free Trial
+        <a href="/signup.html" class="btn ${isPopular ? 'btn-primary' : 'btn-secondary'} btn-lg" style="width: 100%;">
+          Get Started
         </a>
       </div>
     `;
   }).join('');
-}
-
-async function loadStats() {
-  const subEl = document.getElementById('stat-subscriptions');
-  const invEl = document.getElementById('stat-invoices');
-  const upEl = document.getElementById('stat-uptime');
-  const timeEl = document.getElementById('stat-speed');
-
-  try {
-    const stats = await api.get('/public/stats');
-    if (subEl) subEl.textContent = stats.active_subscriptions;
-    if (invEl) invEl.textContent = stats.invoices_automated;
-    if (upEl) upEl.textContent = stats.uptime;
-    if (timeEl) timeEl.textContent = stats.processing_time;
-  } catch (err) {
-    if (subEl) subEl.textContent = '12,480+';
-    if (invEl) invEl.textContent = '$8.4M+';
-    if (upEl) upEl.textContent = '99.99%';
-    if (timeEl) timeEl.textContent = '< 0.05s';
-  }
 }
 
 function setupPricingToggle() {
@@ -129,19 +127,15 @@ function setupPricingToggle() {
   if (monthlyBtn && yearlyBtn) {
     monthlyBtn.addEventListener('click', () => {
       billingMode = 'monthly';
-      monthlyBtn.classList.add('btn-primary');
-      monthlyBtn.classList.remove('btn-secondary');
-      yearlyBtn.classList.add('btn-secondary');
-      yearlyBtn.classList.remove('btn-primary');
+      monthlyBtn.className = 'btn btn-primary btn-sm';
+      yearlyBtn.className = 'btn btn-secondary btn-sm';
       renderPlans();
     });
 
     yearlyBtn.addEventListener('click', () => {
       billingMode = 'yearly';
-      yearlyBtn.classList.add('btn-primary');
-      yearlyBtn.classList.remove('btn-secondary');
-      monthlyBtn.classList.add('btn-secondary');
-      monthlyBtn.classList.remove('btn-primary');
+      yearlyBtn.className = 'btn btn-primary btn-sm';
+      monthlyBtn.className = 'btn btn-secondary btn-sm';
       renderPlans();
     });
   }
@@ -163,20 +157,10 @@ function setupFaq() {
   });
 }
 
-function setupMobileNav() {
-  const btn = document.getElementById('mobile-toggle-btn');
-  const nav = document.getElementById('public-nav-links');
-  if (btn && nav) {
-    btn.addEventListener('click', () => {
-      nav.classList.toggle('open');
-    });
-  }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
+  initPublicNavbar();
+  loadLiveStats();
   loadPlans();
-  loadStats();
   setupPricingToggle();
   setupFaq();
-  setupMobileNav();
 });

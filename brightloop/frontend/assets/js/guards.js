@@ -23,6 +23,14 @@ export function enforceAuthGuard(allowedRoles = []) {
   return true;
 }
 
+export function requireRole(allowedRoles = []) {
+  return enforceAuthGuard(allowedRoles);
+}
+
+export function requireAuth(allowedRoles = []) {
+  return enforceAuthGuard(allowedRoles);
+}
+
 export function redirectIfAuthenticated() {
   const token = getAccessToken();
   const user = getCurrentUser();

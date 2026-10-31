@@ -74,7 +74,7 @@ async function refreshAccessToken() {
 }
 
 export async function request(endpoint, options = {}) {
-  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
+  const url = endpoint.startsWith('http') ? endpoint : (endpoint.startsWith('/api/') || endpoint === '/api' ? endpoint : `${API_BASE}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`);
   const headers = options.headers ? { ...options.headers } : {};
 
   if (!headers['Content-Type'] && !(options.body instanceof FormData)) {
@@ -99,11 +99,12 @@ export async function request(endpoint, options = {}) {
     };
   }
 
-  const duration = ((performance.now() - startTime) / 1000).toFixed(3);
-  const pill = document.getElementById('perf-response-time');
-  if (pill) {
-    pill.textContent = `Response: ${duration}s`;
-  }
+  const elapsedMs = Math.round(performance.now() - startTime);
+  const formattedTime = elapsedMs >= 1000 ? `${(elapsedMs / 1000).toFixed(1)}s` : `${elapsedMs}ms`;
+  const badges = document.querySelectorAll('#latency-badge, .latency-badge, #perf-response-time');
+  badges.forEach(badge => {
+    badge.textContent = `⚡ ${formattedTime}`;
+  });
 
   if (response.status === 401 && !options._retry && getRefreshToken()) {
     if (!isRefreshing) {

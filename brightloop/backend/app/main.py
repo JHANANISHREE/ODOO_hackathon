@@ -8,7 +8,7 @@ from fastapi.exceptions import RequestValidationError
 
 from app.core.config import settings
 from app.core.exceptions import AppException
-from app.routers import public, auth, users
+from app.routers import public, auth, users, products, plans, templates
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -79,6 +79,9 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 app.include_router(public.router, prefix=settings.API_V1_STR)
 app.include_router(auth.router, prefix=settings.API_V1_STR)
 app.include_router(users.router, prefix=settings.API_V1_STR)
+app.include_router(products.router, prefix=settings.API_V1_STR)
+app.include_router(plans.router, prefix=settings.API_V1_STR)
+app.include_router(templates.router, prefix=settings.API_V1_STR)
 
 frontend_dir = Path(__file__).resolve().parent.parent.parent / "frontend"
 

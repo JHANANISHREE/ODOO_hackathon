@@ -21,6 +21,7 @@ from app.schemas.subscription import (
 router = APIRouter(prefix="/subscriptions", tags=["Subscriptions"])
 
 @router.get("", response_model=SubscriptionListResponse)
+@router.get("/", response_model=SubscriptionListResponse, include_in_schema=False)
 def list_subscriptions(
     customer_id: Optional[int] = None,
     status: Optional[SubscriptionStatus] = None,

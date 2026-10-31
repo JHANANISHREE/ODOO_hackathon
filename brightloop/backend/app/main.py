@@ -17,7 +17,10 @@ from app.routers import (
     templates,
     taxes,
     discounts,
-    subscriptions
+    subscriptions,
+    invoices,
+    payments,
+    billing
 )
 
 app = FastAPI(
@@ -95,6 +98,9 @@ app.include_router(templates.router, prefix=settings.API_V1_STR)
 app.include_router(taxes.router, prefix=settings.API_V1_STR)
 app.include_router(discounts.router, prefix=settings.API_V1_STR)
 app.include_router(subscriptions.router, prefix=settings.API_V1_STR)
+app.include_router(invoices.router, prefix=settings.API_V1_STR)
+app.include_router(payments.router, prefix=settings.API_V1_STR)
+app.include_router(billing.router, prefix=settings.API_V1_STR)
 
 frontend_dir = Path(__file__).resolve().parent.parent.parent / "frontend"
 

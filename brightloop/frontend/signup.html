@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account | Brightloop Software</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+</head>
+<body style="display:flex; align-items:center; justify-content:center; min-height:100vh; background-color:var(--cream-50); padding:2rem 1.5rem;">
+  <div class="card" style="width:100%; max-width:480px; padding:2.5rem 2.25rem;">
+    <div style="text-align:center; margin-bottom:1.75rem;">
+      <a href="/" style="display:inline-flex; align-items:center; gap:0.6rem; margin-bottom:1rem;">
+        <div class="brand-icon">B</div>
+        <span class="brand-name" style="color:var(--maroon-900); font-size:1.6rem;">Brightloop</span>
+      </a>
+      <h2 style="font-size:1.6rem; margin-bottom:0.35rem;">Start your 14-day trial</h2>
+      <p class="text-muted" style="font-size:0.88rem;">Experience automated billing &amp; subscription intelligence</p>
+    </div>
+
+    <form id="signup-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="signup-name">Full Name</label>
+        <input type="text" id="signup-name" class="form-control" placeholder="Jane Doe" required autocomplete="name">
+        <div class="form-error" id="signup-name-error"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="signup-email">Work Email</label>
+        <input type="email" id="signup-email" class="form-control" placeholder="jane@company.com" required autocomplete="email">
+        <div class="form-error" id="signup-email-error"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="signup-phone">Phone Number (Optional)</label>
+        <input type="tel" id="signup-phone" class="form-control" placeholder="+1 (555) 000-0000" autocomplete="tel">
+        <div class="form-error" id="signup-phone-error"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="signup-password">Password</label>
+        <input type="password" id="signup-password" class="form-control" placeholder="Create strong password" required autocomplete="new-password">
+        <div class="form-error" id="signup-password-error"></div>
+
+        <ul class="checklist" id="password-checklist">
+          <li class="checklist-item" data-rule="length">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>More than 8 characters</span>
+          </li>
+          <li class="checklist-item" data-rule="upper">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>At least 1 uppercase letter (A-Z)</span>
+          </li>
+          <li class="checklist-item" data-rule="lower">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>At least 1 lowercase letter (a-z)</span>
+          </li>
+          <li class="checklist-item" data-rule="special">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>At least 1 special character (!@#$%^&amp;*...)</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="form-error" id="signup-general-error" style="text-align:center; margin-bottom:1rem;"></div>
+
+      <button type="submit" id="signup-submit-btn" class="btn btn-primary btn-lg" style="width:100%; margin-bottom:1.5rem;" disabled>
+        Create Account
+      </button>
+
+      <div style="text-align:center; font-size:0.88rem; color:var(--muted);">
+        Already have an account? <a href="/login.html" style="color:var(--maroon-900); font-weight:600;">Sign in</a>
+      </div>
+    </form>
+  </div>
+
+  <script type="module">
+    import { redirectIfAuthenticated } from '/assets/js/guards.js';
+    import { signupUser } from '/assets/js/auth.js';
+    import { isValidEmail, updatePasswordChecklistUI, setFieldError, clearFieldError } from '/assets/js/validators.js';
+
+    redirectIfAuthenticated();
+
+    const form = document.getElementById('signup-form');
+    const nameInput = document.getElementById('signup-name');
+    const emailInput = document.getElementById('signup-email');
+    const phoneInput = document.getElementById('signup-phone');
+    const passwordInput = document.getElementById('signup-password');
+
+    const nameError = document.getElementById('signup-name-error');
+    const emailError = document.getElementById('signup-email-error');
+    const phoneError = document.getElementById('signup-phone-error');
+    const passwordError = document.getElementById('signup-password-error');
+    const generalError = document.getElementById('signup-general-error');
+    const submitBtn = document.getElementById('signup-submit-btn');
+
+    function checkFormValidity() {
+      const isNameFilled = nameInput.value.trim().length > 0;
+      const isEmailValid = isValidEmail(emailInput.value.trim());
+      const isPasswordStrong = updatePasswordChecklistUI(passwordInput.value, 'password-checklist');
+
+      const allValid = isNameFilled && isEmailValid && isPasswordStrong;
+      submitBtn.disabled = !allValid;
+      return allValid;
+    }
+
+    nameInput.addEventListener('input', () => {
+      clearFieldError(nameInput, nameError);
+      checkFormValidity();
+    });
+
+    emailInput.addEventListener('input', () => {
+      clearFieldError(emailInput, emailError);
+      checkFormValidity();
+    });
+
+    passwordInput.addEventListener('input', () => {
+      clearFieldError(passwordInput, passwordError);
+      checkFormValidity();
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearFieldError(nameInput, nameError);
+      clearFieldError(emailInput, emailError);
+      clearFieldError(passwordInput, passwordError);
+      generalError.textContent = '';
+
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      const phone = phoneInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!checkFormValidity()) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating account...';
+
+      try {
+        await signupUser({ name, email, phone: phone || null, password });
+      } catch (err) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Account';
+
+        if (err.fields && err.fields.email) {
+          setFieldError(emailInput, emailError, err.fields.email);
+        } else if (err.fields && err.fields.password) {
+          setFieldError(passwordInput, passwordError, err.fields.password);
+        } else if (err.fields && err.fields.name) {
+          setFieldError(nameInput, nameError, err.fields.name);
+        } else {
+          generalError.textContent = err.message || 'Signup failed. Please try again.';
+        }
+      }
+    });
+  </script>
+</body>
+</html>

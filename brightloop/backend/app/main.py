@@ -1,5 +1,4 @@
 import time
-import os
 from pathlib import Path
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse, FileResponse
@@ -9,7 +8,7 @@ from fastapi.exceptions import RequestValidationError
 
 from app.core.config import settings
 from app.core.exceptions import AppException
-from app.routers import public
+from app.routers import public, auth, users
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -78,6 +77,8 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
     )
 
 app.include_router(public.router, prefix=settings.API_V1_STR)
+app.include_router(auth.router, prefix=settings.API_V1_STR)
+app.include_router(users.router, prefix=settings.API_V1_STR)
 
 frontend_dir = Path(__file__).resolve().parent.parent.parent / "frontend"
 
@@ -88,18 +89,22 @@ if frontend_dir.exists():
     async def serve_index():
         return FileResponse(frontend_dir / "index.html")
 
+    @app.get("/login.html")
     @app.get("/login")
     async def serve_login():
         return FileResponse(frontend_dir / "login.html")
 
+    @app.get("/signup.html")
     @app.get("/signup")
     async def serve_signup():
         return FileResponse(frontend_dir / "signup.html")
 
+    @app.get("/forgot-password.html")
     @app.get("/forgot-password")
     async def serve_forgot_password():
         return FileResponse(frontend_dir / "forgot-password.html")
 
+    @app.get("/reset-password.html")
     @app.get("/reset-password")
     async def serve_reset_password():
         return FileResponse(frontend_dir / "reset-password.html")

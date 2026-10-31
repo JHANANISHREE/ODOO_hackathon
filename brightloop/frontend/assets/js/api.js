@@ -108,11 +108,12 @@ export async function request(endpoint, options = {}) {
     };
   }
 
-  const duration = ((performance.now() - startTime) / 1000).toFixed(3);
-  const pill = document.getElementById('perf-response-time');
-  if (pill) {
-    pill.textContent = `Response: ${duration}s`;
-  }
+  const elapsedMs = Math.round(performance.now() - startTime);
+  const formattedTime = elapsedMs >= 1000 ? `${(elapsedMs / 1000).toFixed(1)}s` : `${elapsedMs}ms`;
+  const badges = document.querySelectorAll('#latency-badge, .latency-badge, #perf-response-time');
+  badges.forEach(badge => {
+    badge.textContent = `⚡ ${formattedTime}`;
+  });
 
   if (response.status === 401 && !options._retry && getRefreshToken()) {
     if (!isRefreshing) {

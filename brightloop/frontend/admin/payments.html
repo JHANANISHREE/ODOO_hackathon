@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payments &amp; Transactions | Brightloop Software</title>
+  <title>Payments | Brightloop Software</title>
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/css/base.css">
   <link rel="stylesheet" href="/assets/css/components.css">
@@ -11,78 +11,10 @@
 </head>
 <body>
   <div class="app-layout">
-    <aside class="app-sidebar" id="app-sidebar">
-      <div class="sidebar-brand">
-        <div class="brand-icon">B</div>
-        <div class="brand-name">Brightloop</div>
-      </div>
-      <nav class="sidebar-nav">
-        <div class="nav-section-title">Navigation</div>
-        <a href="/admin/dashboard.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-          <span>Overview</span>
-        </a>
-        <a href="/admin/subscriptions.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-          <span>Subscriptions</span>
-        </a>
-        <a href="/admin/products.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-          <span>Products &amp; Variants</span>
-        </a>
-        <a href="/admin/plans.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-          <span>Billing Plans</span>
-        </a>
-        <a href="/admin/templates.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-          <span>Templates</span>
-        </a>
-        <a href="/admin/taxes.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
-          <span>Taxes</span>
-        </a>
-        <a href="/admin/discounts.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
-          <span>Discounts</span>
-        </a>
-        <a href="/admin/invoices.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>
-          <span>Invoices</span>
-        </a>
-        <a href="/admin/payments.html" class="nav-link active">
-          <svg viewBox="0 0 24 24" fill="none"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-          <span>Payments</span>
-        </a>
-        <div class="nav-section-title">Directory</div>
-        <a href="/admin/customers.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-          <span>Customers</span>
-        </a>
-      </nav>
-      <div class="sidebar-user">
-        <div class="user-avatar" id="current-user-avatar">AD</div>
-        <div class="user-info">
-          <div class="user-name" id="current-user-name">Administrator</div>
-          <div class="user-role" id="current-user-role">ADMIN</div>
-        </div>
-      </div>
-    </aside>
+    <aside class="app-sidebar" id="app-sidebar"></aside>
 
     <div class="app-main">
-      <header class="app-topbar">
-        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-        </button>
-        <div class="topbar-search">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="text" id="global-search" placeholder="Search payments, invoices, transactions...">
-        </div>
-        <div class="topbar-actions">
-          <div class="badge badge-success" id="latency-badge" style="font-family: monospace;">⚡ 0ms</div>
-          <button class="btn btn-secondary btn-sm" id="logout-btn">Log out</button>
-        </div>
-      </header>
+      <header class="app-topbar"></header>
 
       <main class="app-content">
         <div class="page-header">
@@ -92,13 +24,13 @@
           </div>
           <div class="page-actions">
             <a href="/admin/invoices.html" class="btn btn-primary">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
               <span>Record Payment via Invoice</span>
             </a>
           </div>
         </div>
 
-        <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-bottom: var(--space-6);">
+        <div class="kpi-grid">
           <div class="kpi-card">
             <div class="kpi-label">Total Successful Collections</div>
             <div class="kpi-value" id="kpi-total-paid">$0.00</div>
@@ -109,54 +41,51 @@
             <div class="kpi-value" id="kpi-total-pending">$0.00</div>
             <div class="kpi-subtext" id="kpi-count-pending">0 payments pending</div>
           </div>
-          <div class="kpi-card">
+          <div class="kpi-card danger">
             <div class="kpi-label">Failed / Refunded</div>
             <div class="kpi-value" id="kpi-total-failed">$0.00</div>
             <div class="kpi-subtext" id="kpi-count-failed">0 failed attempts</div>
           </div>
         </div>
 
-        <div class="card">
-          <div class="card-header" style="display: flex; gap: var(--space-4); align-items: center; justify-content: space-between; flex-wrap: wrap;">
-            <div style="display: flex; gap: var(--space-3); align-items: center;">
-              <input type="text" class="input" id="search-input" placeholder="Search reference or invoice..." style="width: 260px;">
-              <select class="input" id="status-filter" style="width: 170px;">
-                <option value="">All Statuses</option>
-                <option value="PAID">PAID</option>
-                <option value="PENDING">PENDING</option>
-                <option value="FAILED">FAILED</option>
-                <option value="REFUNDED">REFUNDED</option>
-              </select>
-              <select class="input" id="method-filter" style="width: 180px;">
-                <option value="">All Methods</option>
-                <option value="CREDIT_CARD">Credit Card</option>
-                <option value="BANK_TRANSFER">Bank Transfer</option>
-                <option value="MANUAL">Manual / Cash</option>
-                <option value="OTHER">Other</option>
-              </select>
-            </div>
-            <div class="text-muted text-sm" id="payments-counter">Showing 0 payments</div>
-          </div>
-          <div class="card-body" style="padding: 0;">
-            <div class="table-container">
-              <table class="table" id="payments-table">
-                <thead>
-                  <tr>
-                    <th>Payment Ref</th>
-                    <th>Invoice</th>
-                    <th>Customer</th>
-                    <th>Amount</th>
-                    <th>Payment Method</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                    <th style="text-align: right;">Action</th>
-                  </tr>
-                </thead>
-                <tbody id="payments-tbody">
-                  <tr><td colspan="8" class="text-center text-muted" style="padding: var(--space-8);">Loading payments...</td></tr>
-                </tbody>
-              </table>
-            </div>
+        <div class="filter-bar">
+          <input type="text" id="search-input" placeholder="Search reference, invoice, customer...">
+          <select id="status-filter">
+            <option value="">All Statuses</option>
+            <option value="PAID">PAID</option>
+            <option value="PENDING">PENDING</option>
+            <option value="FAILED">FAILED</option>
+            <option value="REFUNDED">REFUNDED</option>
+          </select>
+          <select id="method-filter">
+            <option value="">All Payment Methods</option>
+            <option value="CREDIT_CARD">Credit Card</option>
+            <option value="BANK_TRANSFER">Bank Transfer</option>
+            <option value="MANUAL">Manual / Cash</option>
+            <option value="OTHER">Other</option>
+          </select>
+          <div class="filter-counter" id="payments-counter">Showing 0 payments</div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-responsive">
+            <table id="payments-table">
+              <thead>
+                <tr>
+                  <th>Payment Ref</th>
+                  <th>Invoice</th>
+                  <th>Customer</th>
+                  <th>Amount</th>
+                  <th>Payment Method</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="payments-tbody">
+                <tr><td colspan="8" class="text-center text-muted" style="padding: 2.5rem;">Loading payments...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </main>
@@ -170,8 +99,7 @@
         <h3 class="modal-title" id="detail-title">Payment Details</h3>
         <button class="modal-close" id="close-detail-modal">&times;</button>
       </div>
-      <div class="modal-body" id="detail-content">
-      </div>
+      <div class="modal-body" id="detail-content"></div>
       <div class="modal-footer">
         <button class="btn btn-secondary" id="close-detail-btn">Close</button>
       </div>
@@ -180,6 +108,7 @@
 
   <div id="toast-container" class="toast-container"></div>
 
+  <script type="module" src="/assets/js/layout.js"></script>
   <script type="module" src="/assets/js/pages/payments.js"></script>
 </body>
 </html>

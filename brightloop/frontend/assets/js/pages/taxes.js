@@ -1,6 +1,6 @@
 import { api } from '../api.js';
 import { showToast, openModal, closeModal } from '../ui.js';
-import { enforceAuthGuard } from '../guards.js';
+import { enforceAuthGuard } from '/assets/js/guards.js';
 import { logoutUser, fetchCurrentUserProfile } from '../auth.js';
 
 enforceAuthGuard(['ADMIN']);

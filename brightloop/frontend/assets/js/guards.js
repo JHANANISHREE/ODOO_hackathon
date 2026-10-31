@@ -23,7 +23,13 @@ export function enforceAuthGuard(allowedRoles = []) {
   return true;
 }
 
-export const requireRole = enforceAuthGuard;
+export function requireRole(allowedRoles = []) {
+  return enforceAuthGuard(allowedRoles);
+}
+
+export function requireAuth(allowedRoles = []) {
+  return enforceAuthGuard(allowedRoles);
+}
 
 export function redirectIfAuthenticated() {
   const token = getAccessToken();
@@ -40,7 +46,7 @@ export function redirectIfAuthenticated() {
 
 if (typeof document !== 'undefined') {
   document.addEventListener('click', (e) => {
-    const target = e.target.closest('#logout-btn, #admin-logout-btn, .logout-btn, [data-action="logout"]');
+    const target = e.target.closest('#logout-btn, #admin-logout-btn, #sidebar-logout-btn, .logout-btn, [data-action="logout"]');
     if (target) {
       e.preventDefault();
       clearTokens();

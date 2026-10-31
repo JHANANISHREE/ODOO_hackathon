@@ -30,10 +30,11 @@ export function showToast(message, type = 'info', duration = 3500) {
   }, duration);
 }
 
-export function openModal(modalId) {
-  const modal = document.getElementById(modalId);
+export function openModal(modalOrId) {
+  const modal = typeof modalOrId === 'string' ? document.getElementById(modalOrId) : modalOrId;
   if (!modal) return;
   modal.classList.add('open');
+  modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 
   const firstInput = modal.querySelector('input:not([type="hidden"]), select, textarea');
@@ -42,14 +43,28 @@ export function openModal(modalId) {
   }
 }
 
-export function closeModal(modalId) {
-  const modal = document.getElementById(modalId);
+export function closeModal(modalOrId) {
+  const modal = typeof modalOrId === 'string' ? document.getElementById(modalOrId) : modalOrId;
   if (!modal) return;
   modal.classList.remove('open');
-  if (!document.querySelector('.modal-backdrop.open')) {
+  modal.style.display = 'none';
+  if (!document.querySelector('.modal.open, .modal-backdrop.open')) {
     document.body.style.overflow = '';
   }
 }
+
+document.addEventListener('click', (e) => {
+  const openTrigger = e.target.closest('[data-open-modal]');
+  if (openTrigger) {
+    const target = openTrigger.getAttribute('data-open-modal');
+    openModal(target);
+  }
+  const closeTrigger = e.target.closest('[data-close-modal]');
+  if (closeTrigger) {
+    const target = closeTrigger.getAttribute('data-close-modal');
+    closeModal(target);
+  }
+});
 
 export function formatCurrency(amount, currency = '$') {
   const num = Number(amount) || 0;

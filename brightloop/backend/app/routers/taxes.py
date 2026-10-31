@@ -18,6 +18,7 @@ from app.schemas.tax import (
 router = APIRouter(prefix="/taxes", tags=["Taxes"])
 
 @router.get("", response_model=TaxListResponse)
+@router.get("/", response_model=TaxListResponse, include_in_schema=False)
 def list_taxes(
     active_only: bool = False,
     search: Optional[str] = None,

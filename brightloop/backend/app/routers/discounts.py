@@ -19,6 +19,7 @@ from app.schemas.discount import (
 router = APIRouter(prefix="/discounts", tags=["Discounts"])
 
 @router.get("", response_model=DiscountListResponse)
+@router.get("/", response_model=DiscountListResponse, include_in_schema=False)
 def list_discounts(
     active_only: bool = False,
     search: Optional[str] = None,

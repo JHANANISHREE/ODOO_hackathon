@@ -18,6 +18,7 @@ from app.schemas.plan import (
 router = APIRouter(prefix="/plans", tags=["Plans"])
 
 @router.get("", response_model=PlanListResponse)
+@router.get("/", response_model=PlanListResponse, include_in_schema=False)
 def list_plans(
     period: Optional[BillingPeriod] = None,
     active_only: bool = False,

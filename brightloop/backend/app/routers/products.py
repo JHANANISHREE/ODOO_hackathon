@@ -22,6 +22,7 @@ from app.schemas.product import (
 router = APIRouter(prefix="/products", tags=["Products"])
 
 @router.get("", response_model=ProductListResponse)
+@router.get("/", response_model=ProductListResponse, include_in_schema=False)
 def list_products(
     product_type: Optional[ProductType] = None,
     active_only: bool = False,

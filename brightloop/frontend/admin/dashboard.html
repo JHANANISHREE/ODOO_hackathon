@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overview &amp; Analytics | Brightloop Software</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar" id="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">B</div>
+        <div class="brand-name">Brightloop</div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Navigation</div>
+        <a href="/admin/dashboard.html" class="nav-link active">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Overview</span>
+        </a>
+        <a href="/admin/subscriptions.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          <span>Subscriptions</span>
+        </a>
+        <a href="/admin/products.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+          <span>Products &amp; Variants</span>
+        </a>
+        <a href="/admin/plans.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          <span>Billing Plans</span>
+        </a>
+        <a href="/admin/templates.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          <span>Templates</span>
+        </a>
+        <a href="/admin/taxes.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
+          <span>Taxes</span>
+        </a>
+        <a href="/admin/discounts.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          <span>Discounts</span>
+        </a>
+        <a href="/admin/invoices.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+          <span>Invoices</span>
+        </a>
+        <a href="/admin/payments.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+          <span>Payments</span>
+        </a>
+        <div class="nav-section-title">Directory</div>
+        <a href="/admin/customers.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Customers</span>
+        </a>
+      </nav>
+      <div class="sidebar-user">
+        <div class="user-avatar" id="current-user-avatar">AD</div>
+        <div class="user-info">
+          <div class="user-name" id="current-user-name">Administrator</div>
+          <div class="user-role" id="current-user-role">ADMIN</div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-topbar">
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <div class="topbar-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="global-search" placeholder="Search subscriptions, plans, customers...">
+        </div>
+        <div class="topbar-actions">
+          <div class="badge badge-success" id="latency-badge" style="font-family: monospace;">⚡ 0ms</div>
+          <button class="btn btn-secondary btn-sm" id="logout-btn">Log out</button>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div class="page-header" style="align-items: flex-start;">
+          <div>
+            <div class="page-pretitle">Business Performance</div>
+            <h1 class="page-title" id="greeting-title">Executive Overview</h1>
+            <p class="text-muted text-sm" style="margin-top: 4px;">Real-time metrics, MRR recurring stream, and subscription pipeline.</p>
+          </div>
+          <div class="page-actions" style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+            <button class="btn btn-secondary" id="launch-plan-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              <span>Launch New Plan</span>
+            </button>
+            <a href="/admin/subscriptions.html" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>+ New Subscription</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); margin-bottom: var(--space-6);">
+          <div class="kpi-card">
+            <div class="kpi-label">Active Subscriptions</div>
+            <div class="kpi-value" id="kpi-active-subs">0</div>
+            <div class="kpi-subtext" id="kpi-total-subs">Total subscriptions in system: 0</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Monthly Recurring Revenue (MRR)</div>
+            <div class="kpi-value" id="kpi-mrr">$0.00</div>
+            <div class="kpi-subtext" id="kpi-arr">ARR: $0.00 annualized</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Settled Revenue</div>
+            <div class="kpi-value" id="kpi-total-revenue">$0.00</div>
+            <div class="kpi-subtext">Cumulative payments collected</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Overdue Invoices</div>
+            <div class="kpi-value text-danger" id="kpi-overdue-count">0</div>
+            <div class="kpi-subtext" id="kpi-outstanding-balance">Outstanding: $0.00</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-6); margin-bottom: var(--space-6);">
+          <div class="card" style="padding: var(--space-5);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+              <h3 style="font-size: var(--text-lg); font-weight: var(--font-semibold);">Revenue Trend (Last 6 Months)</h3>
+              <span class="badge badge-muted">Settled Collections</span>
+            </div>
+            <div style="height: 280px; position: relative;">
+              <canvas id="revenue-chart"></canvas>
+            </div>
+          </div>
+          <div class="card" style="padding: var(--space-5);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+              <h3 style="font-size: var(--text-lg); font-weight: var(--font-semibold);">Active Plan Share</h3>
+              <span class="badge badge-muted">Distribution</span>
+            </div>
+            <div style="height: 280px; position: relative;">
+              <canvas id="plan-distribution-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-3);">
+            <div>
+              <h3 style="font-size: var(--text-lg); font-weight: var(--font-semibold);">Recent Subscriptions Pipeline</h3>
+              <p class="text-muted text-xs" style="margin: 0;">Latest customer enrollments across all plans</p>
+            </div>
+            <a href="/admin/subscriptions.html" class="btn btn-secondary btn-sm">View All Subscriptions &rarr;</a>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <div class="table-container">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Sub #</th>
+                    <th>Customer</th>
+                    <th>Plan</th>
+                    <th>Recurring Price</th>
+                    <th>Status</th>
+                    <th>Enrollment Date</th>
+                    <th style="text-align: right;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-subs-tbody">
+                  <tr><td colspan="7" class="text-center text-muted" style="padding: var(--space-6);">Loading recent activity...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal" id="wizard-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog" style="max-width: 600px;">
+      <div class="modal-header">
+        <div>
+          <div class="text-xs text-muted" id="wizard-step-indicator">Step 1 of 3: Plan Identity</div>
+          <h3 class="modal-title" id="wizard-step-title">Launch New Billing Plan</h3>
+        </div>
+        <button class="modal-close" id="close-wizard-modal">&times;</button>
+      </div>
+      <form id="wizard-form">
+        <div class="modal-body">
+          <div id="step-1-content">
+            <div class="form-group">
+              <label class="form-label" for="w-name">Plan Name *</label>
+              <input type="text" class="input" id="w-name" placeholder="e.g. Enterprise Cloud Annual" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="w-code">Plan Code *</label>
+              <input type="text" class="input" id="w-code" placeholder="e.g. ENT-CLOUD-YR" required style="font-family: monospace;">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="w-desc">Description</label>
+              <textarea class="input" id="w-desc" rows="3" placeholder="Target audience, value proposition, and features"></textarea>
+            </div>
+          </div>
+
+          <div id="step-2-content" style="display: none;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+              <div class="form-group">
+                <label class="form-label" for="w-interval">Billing Interval *</label>
+                <select class="input" id="w-interval" required>
+                  <option value="monthly">Monthly</option>
+                  <option value="yearly">Yearly</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="daily">Daily</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="w-price">Base Recurring Price ($) *</label>
+                <input type="number" step="0.01" min="0" class="input" id="w-price" placeholder="49.00" required>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+              <div class="form-group">
+                <label class="form-label" for="w-trial">Trial Days</label>
+                <input type="number" min="0" class="input" id="w-trial" value="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="w-minqty">Minimum Quantity</label>
+                <input type="number" min="1" class="input" id="w-minqty" value="1">
+              </div>
+            </div>
+          </div>
+
+          <div id="step-3-content" style="display: none;">
+            <p class="text-sm text-muted" style="margin-bottom: var(--space-4);">Select a product to associate with this plan for instant subscription quoting:</p>
+            <div class="form-group">
+              <label class="form-label" for="w-product">Product Variant</label>
+              <select class="input" id="w-product">
+                <option value="">-- None (Pure Service Plan) --</option>
+              </select>
+            </div>
+            <div style="background: var(--color-bg); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+              <div style="font-weight: var(--font-semibold); margin-bottom: 4px;">Summary Preview</div>
+              <div class="text-sm" id="wizard-summary-preview">Plan details will appear here.</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" style="justify-content: space-between;">
+          <button type="button" class="btn btn-secondary" id="wizard-prev-btn" style="visibility: hidden;">Back</button>
+          <div style="display: flex; gap: var(--space-3);">
+            <button type="button" class="btn btn-secondary" id="cancel-wizard-btn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="wizard-next-btn">Next Step &rarr;</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script type="module" src="/assets/js/pages/dashboard.js"></script>
+</body>
+</html>

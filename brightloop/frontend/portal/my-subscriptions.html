@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Subscriptions | Brightloop Customer Portal</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+</head>
+<body style="background-color: var(--color-bg);">
+  <div style="min-height: 100vh; display: flex; flex-direction: column;">
+    <header style="background: var(--color-surface); border-bottom: 1px solid var(--color-border); padding: var(--space-4) var(--space-6); position: sticky; top: 0; z-index: var(--z-sticky);">
+      <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: var(--space-4);">
+          <div class="sidebar-brand" style="padding: 0;">
+            <div class="brand-icon">B</div>
+            <div class="brand-name">Brightloop</div>
+          </div>
+          <span class="badge badge-primary" style="font-size: 10px; letter-spacing: 0.05em;">CUSTOMER PORTAL</span>
+        </div>
+        <nav style="display: flex; gap: var(--space-6); align-items: center;">
+          <a href="/portal/my-subscriptions.html" class="nav-link active" style="padding: var(--space-2) 0; border-bottom: 2px solid var(--color-primary); color: var(--color-primary); font-weight: var(--font-semibold);">Subscriptions</a>
+          <a href="/portal/my-invoices.html" class="nav-link" style="padding: var(--space-2) 0; color: var(--color-text-muted);">Invoices &amp; Receipts</a>
+          <a href="/portal/profile.html" class="nav-link" style="padding: var(--space-2) 0; color: var(--color-text-muted);">Account Profile</a>
+        </nav>
+        <div style="display: flex; align-items: center; gap: var(--space-3);">
+          <div style="text-align: right;">
+            <div id="customer-name-display" style="font-weight: var(--font-semibold); font-size: var(--text-sm);">Customer</div>
+            <div id="customer-email-display" class="text-xs text-muted">user@example.com</div>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="logout-btn">Log out</button>
+        </div>
+      </div>
+    </header>
+
+    <main style="flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: var(--space-8) var(--space-6);">
+      <div class="page-header" style="margin-bottom: var(--space-8);">
+        <div>
+          <div class="page-pretitle">Account Self-Service</div>
+          <h1 class="page-title">Subscription Management</h1>
+          <p class="text-muted text-sm" style="margin-top: 4px;">Monitor your active Brightloop services, renewal cycles, and plan features.</p>
+        </div>
+      </div>
+
+      <div id="active-subscription-banner" style="margin-bottom: var(--space-8);">
+        <div class="card" style="padding: var(--space-6); background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.02) 100%); border-color: rgba(59, 130, 246, 0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-4);">
+            <div>
+              <span class="badge badge-success" id="hero-badge">ACTIVE SUBSCRIPTION</span>
+              <h2 id="hero-plan-name" style="font-size: var(--text-2xl); font-weight: var(--font-bold); margin-top: var(--space-2); margin-bottom: var(--space-1);">Loading Plan...</h2>
+              <div style="font-family: monospace; color: var(--color-text-muted); font-size: var(--text-sm);" id="hero-sub-number">SUB-XXXX</div>
+            </div>
+            <div style="text-align: right;">
+              <div class="text-xs text-muted">Recurring Billing Amount</div>
+              <div id="hero-price" style="font-size: var(--text-3xl); font-weight: var(--font-extrabold); color: var(--color-primary);">$0.00</div>
+              <div id="hero-cycle" class="text-xs text-muted">per month</div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-top: var(--space-6); padding-top: var(--space-6); border-top: 1px solid rgba(59, 130, 246, 0.2);">
+            <div>
+              <div class="text-xs text-muted">Started On</div>
+              <div style="font-weight: var(--font-medium);" id="hero-start-date">-</div>
+            </div>
+            <div>
+              <div class="text-xs text-muted">Next Scheduled Invoice</div>
+              <div style="font-weight: var(--font-medium);" id="hero-next-billing">-</div>
+            </div>
+            <div>
+              <div class="text-xs text-muted">Total Lifetime Invoiced</div>
+              <div style="font-weight: var(--font-medium);" id="hero-total-spent">$0.00</div>
+            </div>
+            <div>
+              <div class="text-xs text-muted">Current Outstanding Balance</div>
+              <div style="font-weight: var(--font-medium); color: var(--color-warning);" id="hero-outstanding">$0.00</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: var(--space-3); margin-top: var(--space-6); justify-content: flex-end;" id="hero-actions">
+            <button class="btn btn-secondary btn-sm" id="pause-sub-btn">Pause Subscription</button>
+            <button class="btn btn-danger btn-sm" id="cancel-sub-btn">Cancel Subscription</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 style="font-size: var(--text-lg); font-weight: var(--font-semibold);">All Enrolled Subscriptions</h3>
+        </div>
+        <div class="card-body" style="padding: 0;">
+          <div class="table-container">
+            <table class="table" id="portal-subs-table">
+              <thead>
+                <tr>
+                  <th>Subscription #</th>
+                  <th>Plan Name</th>
+                  <th>Recurring Total</th>
+                  <th>Status</th>
+                  <th>Next Billing</th>
+                  <th>Start Date</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="portal-subs-tbody">
+                <tr><td colspan="7" class="text-center text-muted" style="padding: var(--space-8);">Loading subscriptions...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script type="module" src="/assets/js/pages/portal-subscriptions.js"></script>
+</body>
+</html>

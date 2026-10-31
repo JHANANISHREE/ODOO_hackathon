@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Directory | Brightloop Software</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar" id="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">B</div>
+        <div class="brand-name">Brightloop</div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Navigation</div>
+        <a href="/admin/dashboard.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Overview</span>
+        </a>
+        <a href="/admin/subscriptions.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          <span>Subscriptions</span>
+        </a>
+        <a href="/admin/products.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+          <span>Products &amp; Variants</span>
+        </a>
+        <a href="/admin/plans.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          <span>Billing Plans</span>
+        </a>
+        <a href="/admin/templates.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          <span>Templates</span>
+        </a>
+        <a href="/admin/taxes.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
+          <span>Taxes</span>
+        </a>
+        <a href="/admin/discounts.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          <span>Discounts</span>
+        </a>
+        <a href="/admin/invoices.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+          <span>Invoices</span>
+        </a>
+        <a href="/admin/payments.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+          <span>Payments</span>
+        </a>
+        <div class="nav-section-title">Directory</div>
+        <a href="/admin/customers.html" class="nav-link active">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Customers</span>
+        </a>
+      </nav>
+      <div class="sidebar-user">
+        <div class="user-avatar" id="current-user-avatar">AD</div>
+        <div class="user-info">
+          <div class="user-name" id="current-user-name">Administrator</div>
+          <div class="user-role" id="current-user-role">ADMIN</div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-topbar">
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <div class="topbar-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="global-search" placeholder="Search customer accounts...">
+        </div>
+        <div class="topbar-actions">
+          <div class="badge badge-success" id="latency-badge" style="font-family: monospace;">⚡ 0ms</div>
+          <button class="btn btn-secondary btn-sm" id="logout-btn">Log out</button>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div class="page-header">
+          <div>
+            <div class="page-pretitle">Subscriber Base</div>
+            <h1 class="page-title">Customer Directory</h1>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary" id="add-customer-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>+ Add Customer</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" style="display: flex; gap: var(--space-4); align-items: center; justify-content: space-between; flex-wrap: wrap;">
+            <div style="display: flex; gap: var(--space-3); align-items: center;">
+              <input type="text" class="input" id="search-input" placeholder="Search name or email..." style="width: 280px;">
+              <select class="input" id="status-filter" style="width: 150px;">
+                <option value="">All Statuses</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="text-muted text-sm" id="customers-counter">Showing 0 customers</div>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <div class="table-container">
+              <table class="table" id="customers-table">
+                <thead>
+                  <tr>
+                    <th>Customer Name</th>
+                    <th>Email Address</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Enrolled Date</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="customers-tbody">
+                  <tr><td colspan="7" class="text-center text-muted" style="padding: var(--space-8);">Loading customers...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal" id="customer-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Create Customer</h3>
+        <button class="modal-close" id="close-modal">&times;</button>
+      </div>
+      <form id="customer-form">
+        <div class="modal-body">
+          <input type="hidden" id="customer-id">
+          <div class="form-group">
+            <label class="form-label" for="cust-name">Full Name *</label>
+            <input type="text" class="input" id="cust-name" placeholder="John Doe" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cust-email">Email Address *</label>
+            <input type="email" class="input" id="cust-email" placeholder="john@example.com" required>
+          </div>
+          <div class="form-group" id="password-group">
+            <label class="form-label" for="cust-password">Initial Password *</label>
+            <input type="password" class="input" id="cust-password" placeholder="Min 8 chars, 1 uppercase, 1 special">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cust-phone">Phone Number</label>
+            <input type="tel" class="input" id="cust-phone" placeholder="+1 555-0199">
+          </div>
+          <div class="form-group" id="status-group" style="display: none;">
+            <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
+              <input type="checkbox" id="cust-active" checked>
+              <span>Account Active</span>
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="save-btn">Save Customer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script type="module" src="/assets/js/pages/customers.js"></script>
+</body>
+</html>

@@ -34,8 +34,16 @@ class UserCreate(UserBase):
 class UserUpdate(BaseModel):
     name: Optional[str] = None
     phone: Optional[str] = None
+    password: Optional[str] = None
     role: Optional[UserRole] = None
     is_active: Optional[bool] = None
+
+    @field_validator("password")
+    @classmethod
+    def check_password(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            return validate_password_strength(v)
+        return v
 
 class UserResponse(UserBase):
     id: int

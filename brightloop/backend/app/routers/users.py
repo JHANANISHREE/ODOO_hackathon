@@ -13,6 +13,7 @@ from app.schemas.user import UserCreate, UserUpdate, UserResponse, UserListRespo
 router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.get("", response_model=UserListResponse)
+@router.get("/", response_model=UserListResponse, include_in_schema=False)
 def list_users(
     role: Optional[UserRole] = None,
     search: Optional[str] = None,
@@ -37,6 +38,7 @@ def list_users(
     )
 
 @router.post("", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED, include_in_schema=False)
 def create_user(
     user_in: UserCreate,
     current_user: User = require_role(UserRole.ADMIN),
@@ -77,7 +79,7 @@ def get_user(
 def update_user(
     user_id: int,
     update_in: UserUpdate,
-    current_user: User = require_role(UserRole.ADMIN),
+    current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
     repo = UserRepository(db)
@@ -85,14 +87,20 @@ def update_user(
     if not user:
         raise NotFoundException(f"User {user_id} not found")
 
+    if current_user.role != UserRole.ADMIN and current_user.id != user_id:
+        raise ForbiddenException("Access denied to update this user account")
+
     if update_in.name is not None:
         user.name = update_in.name.strip()
     if update_in.phone is not None:
         user.phone = update_in.phone.strip()
-    if update_in.role is not None:
-        user.role = update_in.role
-    if update_in.is_active is not None:
-        user.is_active = update_in.is_active
+    if update_in.password is not None:
+        user.hashed_password = get_password_hash(update_in.password)
+    if current_user.role == UserRole.ADMIN:
+        if update_in.role is not None:
+            user.role = update_in.role
+        if update_in.is_active is not None:
+            user.is_active = update_in.is_active
 
     updated = repo.update(user)
     return UserResponse.model_validate(updated)

@@ -48,6 +48,10 @@ class InvoiceRepository:
         self.db.refresh(invoice)
         return self.get_by_id(invoice.id)
 
+    def get_by_customer(self, customer_id: int) -> List[Invoice]:
+        items, _ = self.list_invoices(customer_id=customer_id, size=100)
+        return items
+
     def list_invoices(
         self,
         customer_id: Optional[int] = None,

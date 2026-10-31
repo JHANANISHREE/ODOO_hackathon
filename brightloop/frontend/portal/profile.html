@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Settings | Brightloop Customer Portal</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+</head>
+<body style="background-color: var(--color-bg);">
+  <div style="min-height: 100vh; display: flex; flex-direction: column;">
+    <header style="background: var(--color-surface); border-bottom: 1px solid var(--color-border); padding: var(--space-4) var(--space-6); position: sticky; top: 0; z-index: var(--z-sticky);">
+      <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: var(--space-4);">
+          <div class="sidebar-brand" style="padding: 0;">
+            <div class="brand-icon">B</div>
+            <div class="brand-name">Brightloop</div>
+          </div>
+          <span class="badge badge-primary" style="font-size: 10px; letter-spacing: 0.05em;">CUSTOMER PORTAL</span>
+        </div>
+        <nav style="display: flex; gap: var(--space-6); align-items: center;">
+          <a href="/portal/my-subscriptions.html" class="nav-link" style="padding: var(--space-2) 0; color: var(--color-text-muted);">Subscriptions</a>
+          <a href="/portal/my-invoices.html" class="nav-link" style="padding: var(--space-2) 0; color: var(--color-text-muted);">Invoices &amp; Receipts</a>
+          <a href="/portal/profile.html" class="nav-link active" style="padding: var(--space-2) 0; border-bottom: 2px solid var(--color-primary); color: var(--color-primary); font-weight: var(--font-semibold);">Account Profile</a>
+        </nav>
+        <div style="display: flex; align-items: center; gap: var(--space-3);">
+          <div style="text-align: right;">
+            <div id="customer-name-display" style="font-weight: var(--font-semibold); font-size: var(--text-sm);">Customer</div>
+            <div id="customer-email-display" class="text-xs text-muted">user@example.com</div>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="logout-btn">Log out</button>
+        </div>
+      </div>
+    </header>
+
+    <main style="flex: 1; max-width: 800px; width: 100%; margin: 0 auto; padding: var(--space-8) var(--space-6);">
+      <div class="page-header" style="margin-bottom: var(--space-8);">
+        <div>
+          <div class="page-pretitle">Account Management</div>
+          <h1 class="page-title">Personal Settings</h1>
+          <p class="text-muted text-sm" style="margin-top: 4px;">Manage your contact details and security credentials.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: var(--space-6);">
+        <div class="card-header">
+          <h3 style="font-size: var(--text-lg); font-weight: var(--font-semibold);">Profile Information</h3>
+        </div>
+        <div class="card-body">
+          <form id="profile-form">
+            <div class="form-group">
+              <label class="form-label" for="profile-name">Full Name *</label>
+              <input type="text" class="input" id="profile-name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="profile-email">Email Address</label>
+              <input type="email" class="input" id="profile-email" disabled style="background: var(--color-bg);">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="profile-phone">Phone Number</label>
+              <input type="tel" class="input" id="profile-phone" placeholder="+1 555-0100">
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-top: var(--space-4);">
+              <button type="submit" class="btn btn-primary" id="save-profile-btn">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 style="font-size: var(--text-lg); font-weight: var(--font-semibold);">Security &amp; Password</h3>
+        </div>
+        <div class="card-body">
+          <form id="password-form">
+            <div class="form-group">
+              <label class="form-label" for="new-password">New Password</label>
+              <input type="password" class="input" id="new-password" placeholder="At least 8 chars, 1 uppercase, 1 special char" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="confirm-password">Confirm New Password</label>
+              <input type="password" class="input" id="confirm-password" placeholder="Re-type new password" required>
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-top: var(--space-4);">
+              <button type="submit" class="btn btn-secondary" id="save-password-btn">Update Password</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script type="module" src="/assets/js/pages/portal-profile.js"></script>
+</body>
+</html>

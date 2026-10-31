@@ -20,7 +20,9 @@ from app.routers import (
     subscriptions,
     invoices,
     payments,
-    billing
+    billing,
+    dashboard,
+    portal
 )
 
 app = FastAPI(
@@ -101,6 +103,8 @@ app.include_router(subscriptions.router, prefix=settings.API_V1_STR)
 app.include_router(invoices.router, prefix=settings.API_V1_STR)
 app.include_router(payments.router, prefix=settings.API_V1_STR)
 app.include_router(billing.router, prefix=settings.API_V1_STR)
+app.include_router(dashboard.router, prefix=settings.API_V1_STR)
+app.include_router(portal.router, prefix=settings.API_V1_STR)
 
 frontend_dir = Path(__file__).resolve().parent.parent.parent / "frontend"
 

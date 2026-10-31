@@ -72,8 +72,10 @@ class SubscriptionResponse(BaseModel):
     is_paused: bool
     start_date: date
     expiry_date: Optional[date] = None
+    next_billing_date: Optional[date] = None
     payment_terms: str
     total_amount: Decimal
+    recurring_total: Optional[Decimal] = None
     created_at: datetime
     updated_at: datetime
     customer: Optional[UserResponse] = None

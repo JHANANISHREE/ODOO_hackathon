@@ -29,6 +29,7 @@ def enrich_invoice_response(inv) -> InvoiceResponse:
 @router.get("/", response_model=InvoiceListResponse, include_in_schema=False)
 def list_invoices(
     customer_id: Optional[int] = None,
+    subscription_id: Optional[int] = None,
     status: Optional[InvoiceStatus] = None,
     is_overdue: Optional[bool] = None,
     search: Optional[str] = None,
@@ -43,6 +44,7 @@ def list_invoices(
     repo = InvoiceRepository(db)
     items, total = repo.list_invoices(
         customer_id=customer_id,
+        subscription_id=subscription_id,
         status=status,
         is_overdue=is_overdue,
         search=search,

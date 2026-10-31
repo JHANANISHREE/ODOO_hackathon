@@ -56,8 +56,11 @@ class SubscriptionRepository:
         return log
 
     def get_next_subscription_number(self) -> str:
-        count = self.db.execute(select(func.count(Subscription.id))).scalar() or 0
-        return f"SUB-{count + 1:04d}"
+        max_id = self.db.execute(select(func.max(Subscription.id))).scalar() or 0
+        candidate = max_id + 1
+        while self.get_by_number(f"SUB-{candidate:04d}"):
+            candidate += 1
+        return f"SUB-{candidate:04d}"
 
     def list_subscriptions(
         self,

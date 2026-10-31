@@ -10,6 +10,7 @@ from app.models.user import User, UserRole
 from app.models.subscription import SubscriptionStatus
 from app.repositories.subscription_repo import SubscriptionRepository
 from app.services.subscription_service import SubscriptionService
+from app.routers.portal import get_subscription_recurring_total, compute_subscription_next_billing
 from app.schemas.subscription import (
     SubscriptionCreate,
     SubscriptionFromTemplateCreate,
@@ -49,8 +50,17 @@ def list_subscriptions(
     )
     pages = (total + size - 1) // size if total > 0 else 1
 
+    responses = []
+    for s in items:
+        resp = SubscriptionResponse.model_validate(s)
+        rec_tot = get_subscription_recurring_total(s)
+        resp.recurring_total = rec_tot
+        resp.total_amount = rec_tot
+        resp.next_billing_date = compute_subscription_next_billing(s, db)
+        responses.append(resp)
+
     return SubscriptionListResponse(
-        items=[SubscriptionResponse.model_validate(s) for s in items],
+        items=responses,
         total=total,
         page=page,
         size=size,
@@ -68,7 +78,12 @@ def create_subscription(
 
     service = SubscriptionService(db)
     created = service.create_subscription(sub_in, user_id=current_user.id)
-    return SubscriptionResponse.model_validate(created)
+    resp = SubscriptionResponse.model_validate(created)
+    rec_tot = get_subscription_recurring_total(created)
+    resp.recurring_total = rec_tot
+    resp.total_amount = rec_tot
+    resp.next_billing_date = compute_subscription_next_billing(created, db)
+    return resp
 
 @router.post("/from-template", response_model=SubscriptionResponse, status_code=status.HTTP_201_CREATED)
 def create_from_template(
@@ -78,7 +93,12 @@ def create_from_template(
 ):
     service = SubscriptionService(db)
     created = service.create_from_template(req, user_id=current_user.id)
-    return SubscriptionResponse.model_validate(created)
+    resp = SubscriptionResponse.model_validate(created)
+    rec_tot = get_subscription_recurring_total(created)
+    resp.recurring_total = rec_tot
+    resp.total_amount = rec_tot
+    resp.next_billing_date = compute_subscription_next_billing(created, db)
+    return resp
 
 @router.get("/{subscription_id}", response_model=SubscriptionResponse)
 def get_subscription(
@@ -94,7 +114,12 @@ def get_subscription(
     if current_user.role == UserRole.CUSTOMER and sub.customer_id != current_user.id:
         raise ForbiddenException("Access forbidden to this subscription record")
 
-    return SubscriptionResponse.model_validate(sub)
+    resp = SubscriptionResponse.model_validate(sub)
+    rec_tot = get_subscription_recurring_total(sub)
+    resp.recurring_total = rec_tot
+    resp.total_amount = rec_tot
+    resp.next_billing_date = compute_subscription_next_billing(sub, db)
+    return resp
 
 @router.post("/{subscription_id}/transition", response_model=SubscriptionResponse)
 def transition_subscription(
@@ -115,7 +140,12 @@ def transition_subscription(
         user_id=current_user.id,
         note=req.note
     )
-    return SubscriptionResponse.model_validate(updated)
+    resp = SubscriptionResponse.model_validate(updated)
+    rec_tot = get_subscription_recurring_total(updated)
+    resp.recurring_total = rec_tot
+    resp.total_amount = rec_tot
+    resp.next_billing_date = compute_subscription_next_billing(updated, db)
+    return resp
 
 @router.post("/{subscription_id}/toggle-pause", response_model=SubscriptionResponse)
 def toggle_pause_subscription(
@@ -133,7 +163,12 @@ def toggle_pause_subscription(
 
     service = SubscriptionService(db)
     updated = service.toggle_pause(subscription_id, user_id=current_user.id)
-    return SubscriptionResponse.model_validate(updated)
+    resp = SubscriptionResponse.model_validate(updated)
+    rec_tot = get_subscription_recurring_total(updated)
+    resp.recurring_total = rec_tot
+    resp.total_amount = rec_tot
+    resp.next_billing_date = compute_subscription_next_billing(updated, db)
+    return resp
 
 @router.post("/{subscription_id}/renew", response_model=SubscriptionResponse)
 def renew_subscription(
@@ -151,4 +186,9 @@ def renew_subscription(
 
     service = SubscriptionService(db)
     updated = service.renew_subscription(subscription_id, user_id=current_user.id)
-    return SubscriptionResponse.model_validate(updated)
+    resp = SubscriptionResponse.model_validate(updated)
+    rec_tot = get_subscription_recurring_total(updated)
+    resp.recurring_total = rec_tot
+    resp.total_amount = rec_tot
+    resp.next_billing_date = compute_subscription_next_billing(updated, db)
+    return resp

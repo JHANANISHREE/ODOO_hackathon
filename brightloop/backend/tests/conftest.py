@@ -32,3 +32,13 @@ def customer_token(client):
 @pytest.fixture(scope="session")
 def customer_headers(customer_token):
     return {"Authorization": f"Bearer {customer_token}"}
+
+@pytest.fixture(scope="session")
+def staff_token(client):
+    res = client.post("/api/auth/login", json={"email": "staff1@brightloop.com", "password": "Staff@123!"})
+    assert res.status_code == 200, f"Failed to login staff: {res.text}"
+    return res.json()["access_token"]
+
+@pytest.fixture(scope="session")
+def staff_headers(staff_token):
+    return {"Authorization": f"Bearer {staff_token}"}

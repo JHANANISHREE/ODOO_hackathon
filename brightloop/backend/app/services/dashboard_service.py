@@ -14,6 +14,20 @@ class DashboardService:
     def __init__(self, db: Session):
         self.db = db
 
+    def _compute_subscription_recurring_amount(self, sub: Subscription) -> Decimal:
+        if sub.lines:
+            line_sum = sum(
+                Decimal(str(line.line_amount or (line.unit_price * line.quantity + (line.tax_amount or 0))))
+                for line in sub.lines
+            )
+            if line_sum > Decimal("0.00"):
+                return line_sum
+        if sub.total_amount and sub.total_amount > Decimal("0.00"):
+            return sub.total_amount
+        if sub.plan and sub.plan.price:
+            return sub.plan.price
+        return Decimal("0.00")
+
     def get_summary(self) -> Dict[str, Any]:
         today = date.today()
 
@@ -28,7 +42,7 @@ class DashboardService:
 
         for sub in active_subs:
             plan = sub.plan
-            amount = sub.total_amount or Decimal("0.00")
+            amount = self._compute_subscription_recurring_amount(sub)
             if plan:
                 p_name = plan.name
                 plan_counts[p_name] = plan_counts.get(p_name, 0) + 1
@@ -47,19 +61,24 @@ class DashboardService:
 
         total_rev = self.db.query(func.coalesce(func.sum(Payment.amount), Decimal("0.00"))).scalar()
 
-        all_invoices = self.db.query(Invoice).filter(
-            Invoice.status != InvoiceStatus.CANCELLED
+        valid_invoices = self.db.query(Invoice).filter(
+            Invoice.status.notin_([InvoiceStatus.DRAFT, InvoiceStatus.CANCELLED])
         ).all()
 
-        outstanding = Decimal("0.00")
-        overdue_count = 0
+        lifetime_invoiced = sum(inv.total_amount for inv in valid_invoices)
+        outstanding = sum(
+            max(Decimal("0.00"), inv.total_amount - inv.amount_paid)
+            for inv in valid_invoices
+            if inv.status == InvoiceStatus.CONFIRMED and inv.amount_paid < inv.total_amount
+        )
 
-        for inv in all_invoices:
-            bal = inv.total_amount - inv.amount_paid
-            if bal > 0:
-                outstanding += bal
-                if inv.due_date < today and inv.status != InvoiceStatus.PAID:
-                    overdue_count += 1
+        if outstanding > lifetime_invoiced:
+            outstanding = lifetime_invoiced
+
+        overdue_count = sum(
+            1 for inv in valid_invoices
+            if inv.due_date < today and inv.amount_paid < inv.total_amount and inv.status != InvoiceStatus.PAID
+        )
 
         recent_subs_models = self.db.query(Subscription).order_by(
             Subscription.created_at.desc()
@@ -67,6 +86,7 @@ class DashboardService:
 
         recent_subscriptions = []
         for s in recent_subs_models:
+            rec_val = self._compute_subscription_recurring_amount(s)
             recent_subscriptions.append({
                 "id": s.id,
                 "subscription_number": s.subscription_number,
@@ -74,7 +94,7 @@ class DashboardService:
                 "customer_email": s.customer.email if s.customer else "",
                 "plan_name": s.plan.name if s.plan else "Custom Plan",
                 "status": s.status.value,
-                "recurring_total": float(s.total_amount),
+                "recurring_total": float(round(rec_val, 2)),
                 "created_at": s.created_at.isoformat()
             })
 
@@ -99,6 +119,7 @@ class DashboardService:
             "total_subscriptions": total_subs_count,
             "mrr": float(round(mrr, 2)),
             "arr": float(round(arr, 2)),
+            "lifetime_invoiced": float(round(lifetime_invoiced, 2)),
             "total_revenue": float(round(total_rev, 2)),
             "outstanding_balance": float(round(outstanding, 2)),
             "overdue_invoices_count": overdue_count,

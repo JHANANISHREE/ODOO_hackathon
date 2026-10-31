@@ -34,8 +34,11 @@ class InvoiceRepository:
         return self.db.execute(stmt).scalar_one_or_none()
 
     def get_next_invoice_number(self) -> str:
-        count = self.db.execute(select(func.count(Invoice.id))).scalar() or 0
-        return f"INV-{count + 1:04d}"
+        max_id = self.db.execute(select(func.max(Invoice.id))).scalar() or 0
+        candidate = max_id + 1
+        while self.db.execute(select(Invoice).where(Invoice.invoice_number == f"INV-{candidate:04d}")).scalar_one_or_none():
+            candidate += 1
+        return f"INV-{candidate:04d}"
 
     def create(self, invoice: Invoice) -> Invoice:
         self.db.add(invoice)
@@ -55,6 +58,7 @@ class InvoiceRepository:
     def list_invoices(
         self,
         customer_id: Optional[int] = None,
+        subscription_id: Optional[int] = None,
         status: Optional[InvoiceStatus] = None,
         is_overdue: Optional[bool] = None,
         search: Optional[str] = None,
@@ -76,6 +80,10 @@ class InvoiceRepository:
         if customer_id:
             stmt = stmt.where(Invoice.customer_id == customer_id)
             count_stmt = count_stmt.where(Invoice.customer_id == customer_id)
+
+        if subscription_id:
+            stmt = stmt.where(Invoice.subscription_id == subscription_id)
+            count_stmt = count_stmt.where(Invoice.subscription_id == subscription_id)
 
         if status:
             stmt = stmt.where(Invoice.status == status)

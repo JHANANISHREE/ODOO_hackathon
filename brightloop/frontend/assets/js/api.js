@@ -17,6 +17,9 @@ export function clearTokens() {
   localStorage.removeItem('bl_access_token');
   localStorage.removeItem('bl_refresh_token');
   localStorage.removeItem('bl_user');
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  sessionStorage.clear();
 }
 
 export function getCurrentUser() {

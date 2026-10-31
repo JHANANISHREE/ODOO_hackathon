@@ -96,3 +96,16 @@ export function countUp(element, endVal, prefix = '', suffix = '', duration = 12
 
   requestAnimationFrame(update);
 }
+
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('click', (e) => {
+    const logoutTarget = e.target.closest('#logout-btn, #admin-logout-btn, .logout-btn, [data-action="logout"]');
+    if (logoutTarget) {
+      e.preventDefault();
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = '/login.html';
+    }
+  });
+}

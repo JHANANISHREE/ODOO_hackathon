@@ -41,6 +41,8 @@ export async function signupUser(userData) {
 
 export function logoutUser() {
   clearTokens();
+  localStorage.clear();
+  sessionStorage.clear();
   window.location.href = '/login.html';
 }
 

@@ -23,6 +23,8 @@ export function enforceAuthGuard(allowedRoles = []) {
   return true;
 }
 
+export const requireRole = enforceAuthGuard;
+
 export function redirectIfAuthenticated() {
   const token = getAccessToken();
   const user = getCurrentUser();
@@ -34,4 +36,17 @@ export function redirectIfAuthenticated() {
       window.location.href = '/portal/my-subscriptions.html';
     }
   }
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('click', (e) => {
+    const target = e.target.closest('#logout-btn, #admin-logout-btn, .logout-btn, [data-action="logout"]');
+    if (target) {
+      e.preventDefault();
+      clearTokens();
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = '/login.html';
+    }
+  });
 }

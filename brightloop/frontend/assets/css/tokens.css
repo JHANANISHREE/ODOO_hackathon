@@ -1,0 +1,37 @@
+:root {
+  --maroon-900: #2E171C;
+  --maroon-800: #3B1F26;
+  --maroon-700: #4F2A33;
+  --maroon-600: #6B3A46;
+  --cream-50: #FBF8F2;
+  --cream-100: #F5F0E6;
+  --cream-200: #EAE3D6;
+  --ink: #2A1A1E;
+  --muted: #7A6B6E;
+  --danger: #8B1E2D;
+  --danger-bg: #F8D7DA;
+  --success-bg: #C9DEC5;
+  --success-ink: #2F5D34;
+  --warn-bg: #F0DFB5;
+  --warn-ink: #7A5310;
+  --info-bg: #D4DDEA;
+  --info-ink: #20416E;
+  --border: #E2D9C9;
+  --border-focus: #4F2A33;
+  --card-bg: #FFFFFF;
+  --card-bg-soft: #FDFCFA;
+  --font-heading: 'Transcity', Georgia, serif;
+  --font-metric: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --shadow-sm: 0 2px 8px rgba(46, 23, 28, 0.04);
+  --shadow-md: 0 8px 24px rgba(46, 23, 28, 0.06);
+  --shadow-lg: 0 16px 40px rgba(46, 23, 28, 0.09);
+  --transition-fast: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  --sidebar-width: 260px;
+}

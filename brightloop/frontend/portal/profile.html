@@ -4,90 +4,72 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Account Settings | Brightloop Customer Portal</title>
+  <link rel="stylesheet" href="/assets/css/reset.css">
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/css/base.css">
-  <link rel="stylesheet" href="/assets/css/components.css">
   <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 </head>
-<body style="background-color: var(--color-bg);">
+<body>
   <div style="min-height: 100vh; display: flex; flex-direction: column;">
-        <header class="portal-header">
-      <div class="portal-header-container">
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <div class="portal-brand">
-            <div class="portal-brand-icon">B</div>
-            <div class="portal-brand-text">Brightloop</div>
-          </div>
-          <span class="portal-badge">CUSTOMER PORTAL</span>
-        </div>
-        <nav class="portal-nav">
-          <a href="/portal/my-subscriptions.html" class="portal-nav-link">Subscriptions</a>
-          <a href="/portal/my-invoices.html" class="portal-nav-link">Invoices &amp; Receipts</a>
-          <a href="/portal/profile.html" class="portal-nav-link active">Account Profile</a>
-        </nav>
-        <div class="portal-user-section">
-          <div class="portal-user-meta">
-            <div id="customer-name-display" class="portal-user-name">Customer</div>
-            <div id="customer-email-display" class="portal-user-email">user@example.com</div>
-          </div>
-          <button class="btn btn-secondary btn-sm" id="logout-btn">Log out</button>
-        </div>
-      </div>
-    </header>
+    <header class="portal-header"></header>
 
-    <main style="flex: 1; max-width: 800px; width: 100%; margin: 0 auto; padding: var(--space-8) var(--space-6);">
-      <div class="page-header" style="margin-bottom: var(--space-8);">
+    <main class="container" style="flex: 1; max-width: 800px; padding-top: 2.5rem; padding-bottom: 4rem;">
+      <div class="page-header" style="margin-bottom: 2rem;">
         <div>
-          <div class="page-pretitle">Account Management</div>
-          <h1 class="page-title">Personal Settings</h1>
-          <p class="text-muted text-sm" style="margin-top: 4px;">Manage your contact details and security credentials.</p>
+          <div style="font-size: 0.825rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Account Settings</div>
+          <h1 style="font-size: clamp(2rem, 3vw + 0.5rem, 2.75rem); color: var(--maroon-900); line-height: 1.15; margin-bottom: 0.35rem;">Account Profile</h1>
+          <p class="text-muted" style="margin-top: 0.25rem;">Manage your organization contact details and security credentials.</p>
         </div>
       </div>
 
-      <div class="card" style="margin-bottom: var(--space-6);">
-        <div class="card-header">
-          <h3 style="font-size: var(--text-lg); font-weight: var(--font-semibold);">Profile Information</h3>
+      <div class="card" style="padding: 24px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); border-radius: var(--radius-card); background-color: var(--card-bg); margin-bottom: 2rem;">
+        <div class="card-header" style="margin-bottom: 1.5rem;">
+          <h3 style="font-size: 1.15rem; font-weight: 600; font-family: var(--font-body); color: var(--maroon-900);">Profile Information</h3>
         </div>
-        <div class="card-body">
-          <form id="profile-form">
-            <div class="form-group">
-              <label class="form-label" for="profile-name">Full Name *</label>
-              <input type="text" class="input" id="profile-name" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="profile-email">Email Address</label>
-              <input type="email" class="input" id="profile-email" disabled style="background: var(--color-bg);">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="profile-phone">Phone Number</label>
-              <input type="tel" class="input" id="profile-phone" placeholder="+1 555-0100">
-            </div>
-            <div style="display: flex; justify-content: flex-end; margin-top: var(--space-4);">
-              <button type="submit" class="btn btn-primary" id="save-profile-btn">Save Changes</button>
-            </div>
-          </form>
-        </div>
+        <form id="profile-form">
+          <div class="form-group">
+            <label class="form-label" for="profile-name">Full Name / Organization *</label>
+            <input type="text" id="profile-name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="profile-email">Email Address</label>
+            <input type="email" id="profile-email" disabled style="background-color: var(--cream-100); cursor: not-allowed;">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="profile-phone">Phone Number</label>
+            <input type="text" id="profile-phone" placeholder="+1 555-0100">
+          </div>
+          <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+            <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+          </div>
+        </form>
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          <h3 style="font-size: var(--text-lg); font-weight: var(--font-semibold);">Security &amp; Password</h3>
+      <div class="card" style="padding: 24px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); border-radius: var(--radius-card); background-color: var(--card-bg);">
+        <div class="card-header" style="margin-bottom: 1.5rem;">
+          <h3 style="font-size: 1.15rem; font-weight: 600; font-family: var(--font-body); color: var(--maroon-900);">Update Password</h3>
         </div>
-        <div class="card-body">
-          <form id="password-form">
-            <div class="form-group">
-              <label class="form-label" for="new-password">New Password</label>
-              <input type="password" class="input" id="new-password" placeholder="At least 8 chars, 1 uppercase, 1 special char" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="confirm-password">Confirm New Password</label>
-              <input type="password" class="input" id="confirm-password" placeholder="Re-type new password" required>
-            </div>
-            <div style="display: flex; justify-content: flex-end; margin-top: var(--space-4);">
-              <button type="submit" class="btn btn-secondary" id="save-password-btn">Update Password</button>
-            </div>
-          </form>
-        </div>
+        <form id="password-form">
+          <div class="form-group">
+            <label class="form-label" for="current-password">Current Password *</label>
+            <input type="password" id="current-password" required autocomplete="current-password">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="new-password">New Password *</label>
+            <input type="password" id="new-password" required autocomplete="new-password">
+            <div class="text-xs text-muted" style="margin-top: 0.25rem;">Must be at least 8 characters, with uppercase, lowercase, numbers, and symbols.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="confirm-password">Confirm New Password *</label>
+            <input type="password" id="confirm-password" required autocomplete="new-password">
+          </div>
+          <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+            <button type="submit" class="btn btn-primary btn-sm">Update Password</button>
+          </div>
+        </form>
       </div>
     </main>
   </div>

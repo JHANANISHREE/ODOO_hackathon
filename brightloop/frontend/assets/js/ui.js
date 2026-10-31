@@ -64,6 +64,16 @@ document.addEventListener('click', (e) => {
     const target = closeTrigger.getAttribute('data-close-modal');
     closeModal(target);
   }
+  if (e.target.classList.contains('modal') && e.target.classList.contains('open')) {
+    closeModal(e.target);
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const openModals = document.querySelectorAll('.modal.open, [id$="-modal"].open');
+    openModals.forEach(m => closeModal(m));
+  }
 });
 
 export function formatCurrency(amount, currency = '$') {

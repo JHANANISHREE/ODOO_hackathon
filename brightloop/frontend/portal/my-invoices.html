@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Billing &amp; Receipts | Brightloop Customer Portal</title>
+  <title>Invoices &amp; Receipts | Brightloop Customer Portal</title>
+  <link rel="stylesheet" href="/assets/css/reset.css">
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/css/base.css">
-  <link rel="stylesheet" href="/assets/css/components.css">
   <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <style>
     @media print {
       body * {
@@ -35,127 +38,103 @@
     }
   </style>
 </head>
-<body style="background-color: var(--color-bg);">
+<body>
   <div style="min-height: 100vh; display: flex; flex-direction: column;">
-        <header class="portal-header">
-      <div class="portal-header-container">
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <div class="portal-brand">
-            <div class="portal-brand-icon">B</div>
-            <div class="portal-brand-text">Brightloop</div>
-          </div>
-          <span class="portal-badge">CUSTOMER PORTAL</span>
-        </div>
-        <nav class="portal-nav">
-          <a href="/portal/my-subscriptions.html" class="portal-nav-link">Subscriptions</a>
-          <a href="/portal/my-invoices.html" class="portal-nav-link active">Invoices &amp; Receipts</a>
-          <a href="/portal/profile.html" class="portal-nav-link">Account Profile</a>
-        </nav>
-        <div class="portal-user-section">
-          <div class="portal-user-meta">
-            <div id="customer-name-display" class="portal-user-name">Customer</div>
-            <div id="customer-email-display" class="portal-user-email">user@example.com</div>
-          </div>
-          <button class="btn btn-secondary btn-sm" id="logout-btn">Log out</button>
-        </div>
-      </div>
-    </header>
+    <header class="portal-header"></header>
 
-    <main style="flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: var(--space-8) var(--space-6);">
-      <div class="page-header" style="margin-bottom: var(--space-6);">
+    <main class="container" style="flex: 1; padding-top: 2.5rem; padding-bottom: 4rem;">
+      <div class="page-header" style="margin-bottom: 2rem;">
         <div>
-          <div class="page-pretitle">Financial History</div>
-          <h1 class="page-title">Invoices &amp; Receipts</h1>
-          <p class="text-muted text-sm" style="margin-top: 4px;">Download official VAT/GST receipts or settle outstanding subscription balances.</p>
+          <div style="font-size: 0.825rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Customer Portal</div>
+          <h1 style="font-size: clamp(2rem, 3vw + 0.5rem, 2.75rem); color: var(--maroon-900); line-height: 1.15; margin-bottom: 0.35rem;">Invoices &amp; Receipts</h1>
+          <p class="text-muted" style="margin-top: 0.25rem;">Download official VAT/GST receipts or settle outstanding subscription balances.</p>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-4);">
-          <div style="display: flex; gap: var(--space-3); align-items: center;">
-            <input type="text" class="input" id="search-input" placeholder="Search invoice number..." style="width: 240px;">
-            <select class="input" id="status-filter" style="width: 160px;">
+      <div class="card" style="padding: 24px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); border-radius: var(--radius-card); background-color: var(--card-bg);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; flex: 1; max-width: 600px;">
+            <input type="text" id="search-input" placeholder="Search by invoice number..." style="max-width: 320px;">
+            <select id="status-filter" style="max-width: 180px;">
               <option value="">All Statuses</option>
-              <option value="paid">PAID</option>
-              <option value="confirmed">PENDING / CONFIRMED</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="paid">Paid</option>
             </select>
           </div>
-          <div class="text-muted text-sm" id="invoices-counter">Showing 0 invoices</div>
+          <div class="text-xs text-muted" id="invoices-counter">Showing 0 invoices</div>
         </div>
-        <div class="card-body" style="padding: 0;">
-          <div class="table-container">
-            <table class="table" id="portal-invoices-table">
-              <thead>
-                <tr>
-                  <th>Invoice #</th>
-                  <th>Period</th>
-                  <th>Issue Date</th>
-                  <th>Due Date</th>
-                  <th>Total Amount</th>
-                  <th>Paid</th>
-                  <th>Balance Due</th>
-                  <th>Status</th>
-                  <th style="text-align: right;">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="portal-invoices-tbody">
-                <tr><td colspan="9" class="text-center text-muted" style="padding: var(--space-8);">Loading billing history...</td></tr>
-              </tbody>
-            </table>
-          </div>
+
+        <div class="table-container">
+          <table class="table" id="portal-invoices-table">
+            <thead>
+              <tr>
+                <th>Invoice #</th>
+                <th>Billing Period</th>
+                <th>Issue Date</th>
+                <th>Due Date</th>
+                <th class="text-right">Total Amount</th>
+                <th class="text-right">Paid</th>
+                <th class="text-right">Balance Due</th>
+                <th>Status</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="portal-invoices-tbody">
+              <tr><td colspan="9" class="text-center text-muted" style="padding: 2.5rem;">Loading billing records...</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </main>
   </div>
 
-  <div class="modal" id="receipt-modal">
-    <div class="modal-backdrop"></div>
-    <div class="modal-dialog" style="max-width: 700px;">
+  <!-- Receipt Details Modal -->
+  <div id="receipt-modal" class="modal-backdrop">
+    <div class="modal-dialog modal-lg">
       <div class="modal-header">
-        <h3 class="modal-title" id="receipt-title">Invoice Receipt</h3>
-        <button class="modal-close" id="close-receipt-modal">&times;</button>
+        <h3 class="modal-title" style="font-family: var(--font-display); font-size: 1.25rem; color: var(--maroon-900);">Invoice Receipt</h3>
+        <button class="btn btn-ghost btn-sm" id="close-receipt-modal" aria-label="Close modal">&times;</button>
       </div>
-      <div class="modal-body" id="receipt-content"></div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" id="close-receipt-btn">Close</button>
-        <button class="btn btn-primary" id="print-receipt-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width: 16px; height: 16px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-          <span>Print / PDF</span>
-        </button>
+      <div class="modal-body" id="receipt-content" style="padding: 1.75rem;">
+        Loading receipt...
+      </div>
+      <div class="modal-footer" style="padding: 1rem 1.75rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button class="btn btn-secondary btn-sm" id="close-receipt-btn">Close</button>
+        <button class="btn btn-primary btn-sm" id="print-receipt-btn">Print / PDF</button>
       </div>
     </div>
   </div>
 
-  <div class="modal" id="pay-modal">
-    <div class="modal-backdrop"></div>
+  <!-- Pay Dialog Modal -->
+  <div id="pay-modal" class="modal-backdrop">
     <div class="modal-dialog">
       <div class="modal-header">
-        <h3 class="modal-title" id="pay-modal-title">Settle Invoice</h3>
-        <button class="modal-close" id="close-pay-modal">&times;</button>
+        <h3 class="modal-title" style="font-family: var(--font-display); font-size: 1.25rem; color: var(--maroon-900);">Settle Invoice</h3>
+        <button class="btn btn-ghost btn-sm" id="close-pay-modal" aria-label="Close modal">&times;</button>
       </div>
       <form id="pay-form">
-        <div class="modal-body">
+        <div class="modal-body" style="padding: 1.75rem;">
           <input type="hidden" id="pay-invoice-id">
-          <div style="background: var(--color-bg); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--color-border); margin-bottom: var(--space-4);">
-            <div class="text-xs text-muted">Outstanding Balance Due</div>
-            <div id="pay-balance-display" style="font-size: var(--text-2xl); font-weight: var(--font-bold); color: var(--color-primary);">$0.00</div>
+          <div class="form-group">
+            <label class="form-label">Outstanding Balance</label>
+            <div id="pay-balance-display" class="metric-numeral" style="font-size: 1.6rem; color: var(--maroon-900);">$0.00</div>
           </div>
           <div class="form-group">
             <label class="form-label" for="pay-amount">Payment Amount ($) *</label>
-            <input type="number" step="0.01" min="0.01" class="input" id="pay-amount" required>
+            <input type="number" id="pay-amount" step="0.01" min="0.01" required>
           </div>
           <div class="form-group">
-            <label class="form-label" for="pay-method">Payment Method *</label>
-            <select class="input" id="pay-method" required>
+            <label class="form-label" for="pay-method">Payment Method</label>
+            <select id="pay-method">
               <option value="card">Credit / Debit Card</option>
-              <option value="upi">UPI / Instant Transfer</option>
-              <option value="bank_transfer">Direct Bank Wire</option>
+              <option value="bank_transfer">Direct Bank Transfer</option>
+              <option value="upi">UPI / Instant Pay</option>
             </select>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" id="cancel-pay-btn">Cancel</button>
-          <button type="submit" class="btn btn-primary" id="confirm-pay-btn">Pay Now</button>
+        <div class="modal-footer" style="padding: 1rem 1.75rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-secondary btn-sm" id="cancel-pay-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Confirm Payment</button>
         </div>
       </form>
     </div>

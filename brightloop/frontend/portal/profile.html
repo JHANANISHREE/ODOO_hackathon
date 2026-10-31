@@ -11,24 +11,24 @@
 </head>
 <body style="background-color: var(--color-bg);">
   <div style="min-height: 100vh; display: flex; flex-direction: column;">
-    <header style="background: var(--color-surface); border-bottom: 1px solid var(--color-border); padding: var(--space-4) var(--space-6); position: sticky; top: 0; z-index: var(--z-sticky);">
-      <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;">
-        <div style="display: flex; align-items: center; gap: var(--space-4);">
-          <div class="sidebar-brand" style="padding: 0;">
-            <div class="brand-icon">B</div>
-            <div class="brand-name">Brightloop</div>
+        <header class="portal-header">
+      <div class="portal-header-container">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div class="portal-brand">
+            <div class="portal-brand-icon">B</div>
+            <div class="portal-brand-text">Brightloop</div>
           </div>
-          <span class="badge badge-primary" style="font-size: 10px; letter-spacing: 0.05em;">CUSTOMER PORTAL</span>
+          <span class="portal-badge">CUSTOMER PORTAL</span>
         </div>
-        <nav style="display: flex; gap: var(--space-6); align-items: center;">
-          <a href="/portal/my-subscriptions.html" class="nav-link" style="padding: var(--space-2) 0; color: var(--color-text-muted);">Subscriptions</a>
-          <a href="/portal/my-invoices.html" class="nav-link" style="padding: var(--space-2) 0; color: var(--color-text-muted);">Invoices &amp; Receipts</a>
-          <a href="/portal/profile.html" class="nav-link active" style="padding: var(--space-2) 0; border-bottom: 2px solid var(--color-primary); color: var(--color-primary); font-weight: var(--font-semibold);">Account Profile</a>
+        <nav class="portal-nav">
+          <a href="/portal/my-subscriptions.html" class="portal-nav-link">Subscriptions</a>
+          <a href="/portal/my-invoices.html" class="portal-nav-link">Invoices &amp; Receipts</a>
+          <a href="/portal/profile.html" class="portal-nav-link active">Account Profile</a>
         </nav>
-        <div style="display: flex; align-items: center; gap: var(--space-3);">
-          <div style="text-align: right;">
-            <div id="customer-name-display" style="font-weight: var(--font-semibold); font-size: var(--text-sm);">Customer</div>
-            <div id="customer-email-display" class="text-xs text-muted">user@example.com</div>
+        <div class="portal-user-section">
+          <div class="portal-user-meta">
+            <div id="customer-name-display" class="portal-user-name">Customer</div>
+            <div id="customer-email-display" class="portal-user-email">user@example.com</div>
           </div>
           <button class="btn btn-secondary btn-sm" id="logout-btn">Log out</button>
         </div>

@@ -23,7 +23,7 @@ document.getElementById('logout-btn')?.addEventListener('click', () => {
 
 async function loadProfile() {
   try {
-    currentUser = await api.get('/api/auth/me');
+    currentUser = await api.get('/auth/me');
     profileNameInput.value = currentUser.name || '';
     profileEmailInput.value = currentUser.email || '';
     profilePhoneInput.value = currentUser.phone || '';
@@ -45,7 +45,7 @@ profileForm?.addEventListener('submit', async (e) => {
       phone: profilePhoneInput.value.trim() || null
     };
 
-    const updated = await api.put(`/api/users/${currentUser.id}`, payload);
+    const updated = await api.put(`/users/${currentUser.id}`, payload);
     currentUser = updated;
     localStorage.setItem('user', JSON.stringify(updated));
     document.getElementById('customer-name-display').textContent = updated.name;
@@ -72,7 +72,7 @@ passwordForm?.addEventListener('submit', async (e) => {
   }
 
   try {
-    await api.put(`/api/users/${currentUser.id}`, { password: pwd });
+    await api.put(`/users/${currentUser.id}`, { password: pwd });
     newPasswordInput.value = '';
     confirmPasswordInput.value = '';
     showToast('Password updated successfully', 'success');

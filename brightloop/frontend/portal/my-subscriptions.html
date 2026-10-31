@@ -11,24 +11,24 @@
 </head>
 <body style="background-color: var(--color-bg);">
   <div style="min-height: 100vh; display: flex; flex-direction: column;">
-    <header style="background: var(--color-surface); border-bottom: 1px solid var(--color-border); padding: var(--space-4) var(--space-6); position: sticky; top: 0; z-index: var(--z-sticky);">
-      <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;">
-        <div style="display: flex; align-items: center; gap: var(--space-4);">
-          <div class="sidebar-brand" style="padding: 0;">
-            <div class="brand-icon">B</div>
-            <div class="brand-name">Brightloop</div>
+        <header class="portal-header">
+      <div class="portal-header-container">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div class="portal-brand">
+            <div class="portal-brand-icon">B</div>
+            <div class="portal-brand-text">Brightloop</div>
           </div>
-          <span class="badge badge-primary" style="font-size: 10px; letter-spacing: 0.05em;">CUSTOMER PORTAL</span>
+          <span class="portal-badge">CUSTOMER PORTAL</span>
         </div>
-        <nav style="display: flex; gap: var(--space-6); align-items: center;">
-          <a href="/portal/my-subscriptions.html" class="nav-link active" style="padding: var(--space-2) 0; border-bottom: 2px solid var(--color-primary); color: var(--color-primary); font-weight: var(--font-semibold);">Subscriptions</a>
-          <a href="/portal/my-invoices.html" class="nav-link" style="padding: var(--space-2) 0; color: var(--color-text-muted);">Invoices &amp; Receipts</a>
-          <a href="/portal/profile.html" class="nav-link" style="padding: var(--space-2) 0; color: var(--color-text-muted);">Account Profile</a>
+        <nav class="portal-nav">
+          <a href="/portal/my-subscriptions.html" class="portal-nav-link active">Subscriptions</a>
+          <a href="/portal/my-invoices.html" class="portal-nav-link">Invoices &amp; Receipts</a>
+          <a href="/portal/profile.html" class="portal-nav-link">Account Profile</a>
         </nav>
-        <div style="display: flex; align-items: center; gap: var(--space-3);">
-          <div style="text-align: right;">
-            <div id="customer-name-display" style="font-weight: var(--font-semibold); font-size: var(--text-sm);">Customer</div>
-            <div id="customer-email-display" class="text-xs text-muted">user@example.com</div>
+        <div class="portal-user-section">
+          <div class="portal-user-meta">
+            <div id="customer-name-display" class="portal-user-name">Customer</div>
+            <div id="customer-email-display" class="portal-user-email">user@example.com</div>
           </div>
           <button class="btn btn-secondary btn-sm" id="logout-btn">Log out</button>
         </div>
@@ -44,6 +44,15 @@
         </div>
       </div>
 
+            <div id="no-active-sub-banner" style="display: none; margin-bottom: var(--space-8);">
+        <div class="card" style="padding: 2.25rem; text-align: center; background: #ffffff; border: 1px dashed #d1d5db; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+          <div style="width: 52px; height: 52px; margin: 0 auto 1rem; border-radius: 50%; background: rgba(128, 0, 32, 0.08); display: flex; align-items: center; justify-content: center; color: #800020;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V8H6a2 2 0 0 1-2-2V4h16a2 2 0 0 1 2 2v6"></path><path d="M4 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V12"></path><line x1="9" y1="14" x2="15" y2="14"></line></svg>
+          </div>
+          <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.35rem; color: #111827;">No Active Subscription</h3>
+          <p class="text-muted text-sm" style="margin: 0 auto; max-width: 480px; color: #6b7280;">You currently have no active recurring subscriptions. Review your past subscriptions below or contact support to activate a plan.</p>
+        </div>
+      </div>
       <div id="active-subscription-banner" style="margin-bottom: var(--space-8);">
         <div class="card" style="padding: var(--space-6); background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.02) 100%); border-color: rgba(59, 130, 246, 0.3);">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-4);">

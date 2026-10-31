@@ -22,7 +22,7 @@ const payBalanceDisplay = document.getElementById('pay-balance-display');
 const payAmountInput = document.getElementById('pay-amount');
 const payMethodSelect = document.getElementById('pay-method');
 
-const userStr = localStorage.getItem('user');
+const userStr = localStorage.getItem('bl_user') || localStorage.getItem('user');
 if (userStr) {
   try {
     const u = JSON.parse(userStr);
@@ -227,7 +227,7 @@ payForm?.addEventListener('submit', async (e) => {
       notes: 'Payment settled via customer self-service portal'
     };
 
-    await api.post('/api/payments', payload);
+    await api.post('/payments', payload);
     closeModal(payModal);
     showToast('Payment completed successfully!', 'success');
     loadInvoices();
@@ -238,7 +238,7 @@ payForm?.addEventListener('submit', async (e) => {
 
 async function loadInvoices() {
   try {
-    const list = await api.get('/api/portal/invoices');
+    const list = await api.get('/portal/invoices');
     invoicesState = Array.isArray(list) ? list : [];
     renderTable();
   } catch (err) {

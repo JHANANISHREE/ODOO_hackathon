@@ -77,7 +77,13 @@ async function refreshAccessToken() {
 }
 
 export async function request(endpoint, options = {}) {
-  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
+  let cleanEndpoint = endpoint;
+  if (cleanEndpoint.startsWith('/api/')) {
+    cleanEndpoint = cleanEndpoint.substring(4);
+  } else if (cleanEndpoint === '/api') {
+    cleanEndpoint = '';
+  }
+  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${cleanEndpoint.startsWith('/') ? cleanEndpoint : '/' + cleanEndpoint}`;
   const headers = options.headers ? { ...options.headers } : {};
 
   if (!headers['Content-Type'] && !(options.body instanceof FormData)) {
